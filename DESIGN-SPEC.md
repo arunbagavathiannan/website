@@ -1,6 +1,8 @@
 # Portfolio Website — Design Spec (DRAFT for review)
 
-**Status:** Draft. Sections 1–3 are yours to own — I've pre-filled them from your resume as a starting point so you have something concrete to react to, not a finished answer. Correct anything that doesn't match your intent before we touch code.
+**Status:** Draft spec, partially built. Sections 1–3 are yours to own — I've pre-filled them from your resume as a starting point so you have something concrete to react to, not a finished answer. Correct anything that doesn't match your intent.
+
+**Already implemented** (builds clean, `astro check` 0 errors): the homepage — hero, experience, projects, contact — plus the retheme, two new widgets, and site config. **Not implemented:** the Phase 0 demo-content strip, Skills (§3.5), About (§3.6), Awards (§3.7). See Section 4.
 
 **Stack:** AstroWind fork (`arunbagavathiannan/astrowind`) — Astro 7, Tailwind v4, static output, deployed on Vercel.
 **Source of truth for content:** `Arun Bagavathiannan Resume (2).pdf` (Sep 15, 2026).
@@ -116,6 +118,28 @@ The one exception: if `/projects/*` deep dives happen (Phase 2), they become a `
 
 Edited in `src/components/CustomStyles.astro` (both `:root` and `.dark` blocks). See Open Question O-2 — burnt orange is a real choice, not a default, and you should confirm it.
 
+Dark mode brightens the accent to `rgb(240 110 20)`. Stock `#BF5700` on a near-black ground is too dark to carry as a link colour; the brighter orange keeps the same identity at usable contrast.
+
+### 2.5 Visual design language (derekchen.dev × AstroWind)
+
+The reference site is minimal-editorial; AstroWind is a widget kit. Fusing them means **keeping AstroWind's architecture and replacing its visual defaults**, not restyling one page.
+
+| Taken from derekchen.dev | Taken from AstroWind |
+|---|---|
+| Oversized name as the only display-scale type | Widget composition via `WidgetWrapper` |
+| Prose-first hero with **links inside the sentences** | Scroll-reveal intersection animations |
+| Plain text CTA with an arrow, not a button | Theme tokens + light/dark toggle |
+| Monochrome social squares | Tabler icon set, Inter via the Fonts API |
+| Experience as a divided list, not a timeline | `Projects.astro` card grid, tag pills, `result` line |
+| Near-black ground, near-monochrome palette | `Headline`, `Button`, `Footer` primitives |
+| Left-aligned section headings | Astro static build, image pipeline |
+
+**The load-bearing idea:** claims stay in sentences. A conventional portfolio hero breaks "60,000+ students" into a stat tile; here it stays inside the paragraph as a link. That is what makes the page read as written rather than assembled — and it's why the hero has no image and no button row.
+
+**Accent discipline.** Burnt orange appears only on links, hover states, the `result` line and section icons. Everything else is black, white or grey. A scarce accent is what makes it read as emphasis; spending it on headings would flatten the whole page.
+
+**Where I deliberately did NOT follow the reference:** the contact block stays as AstroWind's centred `CallToAction`. It's the one section that is visually AstroWind rather than editorial. Flagging it as a loose end — see "What I'd push back on."
+
 ---
 
 ## Section 3 — Per-Block Specs
@@ -165,12 +189,13 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 | # | Title | Description | Tags | Result | Href |
 |---|---|---|---|---|---|
 | 1 | UT Registration Plus | Chrome extension (Manifest V3) giving UT students real-time course availability inside their calendar. I lead the 6-person team. | TypeScript, React, Chrome MV3 | `60,000+ students` | GitHub / Chrome Web Store |
-| 2 | Investly | End-to-end LLM research pipeline: RSS ingestion → local Gemma 3 4B classification → ChromaDB RAG → autonomous daily paper trading against SPY. | Python, Gemma, ChromaDB, RAG | `ρ=+0.34, p=0.001` | GitHub |
+| 2 | ViewTube | Chrome extension surfacing only outlier YouTube videos — ones far outperforming their own channel's baseline. Scores each against a rolling median of that channel's *prior* uploads. Local-only: no server, no API key, no account. | JavaScript, Chrome MV3, TF-IDF, In progress | *(none — not built yet)* | — |
 | 3 | Weed Detection (Texas A&M) | YOLOv8 object-detection pipeline from a 100-image raw dataset to a production model; OpenCV augmentation scaled training data 6×. | Python, YOLOv8, OpenCV | `80%+ precision & recall` | Conference slides / writeup |
 
 **Edge cases:**
-- **Investly's honest result is that you rejected the strategy.** That's a genuine strength — it shows you read your own results instead of shipping a bad signal. Recommend the card description ends with "backtested and rejected the resulting strategy." Don't hide it.
-- Missing images: the widget renders a card without one, but three image-less cards look broken. Need at least a screenshot each. UTRP → Chrome Web Store screenshot. Investly → a chart from the backtest. Weed detection → an annotated detection frame (confirm you're allowed to publish A&M research imagery — **Open Question O-4**).
+- **ViewTube does not exist yet.** R-4 and R-6 apply hardest here. The card carries no `result` metric and leads with "In progress." — because inventing "surfaces 10x outliers" for unwritten software is exactly the fabrication those requirements exist to prevent. It also carries an `In progress` tag. **This is the honest framing, and it is weaker than a shipped project.** If you'd rather not show unbuilt work at all, cut it to two cards; the grid handles `columns={2}` fine. My recommendation is to keep it — a designed-but-unbuilt system with a real architecture doc still shows how you think, as long as it says so.
+- ViewTube replaced Investly at your request. **Investly is the stronger résumé item today** — it's finished, it has a measured result, and rejecting your own strategy is a genuine signal of judgment. Consider showing both once ViewTube ships.
+- Missing images: the widget renders a card without one, but three image-less cards look bare. Need at least a screenshot each. UTRP → Chrome Web Store screenshot. ViewTube → a badge-injection mockup once it exists. Weed detection → an annotated detection frame (confirm you're allowed to publish A&M research imagery — **Open Question O-4**).
 - `result` is small and easy to miss. It's the highest-value text on the card; verify visual weight after first build.
 
 ---
@@ -255,17 +280,22 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 ## Section 4 — Implementation Plan (my execution, from your specs)
 
 ### Phase 0 — Strip the template
-1. Delete demo pages: `src/pages/homes/`, `src/pages/landing/`, `pricing.astro`, `services.astro`, `about.astro`, `contact.astro`
-2. Delete demo blog: `src/pages/[...blog]/`, `src/data/post/*`, `rss.xml.ts`; set `apps.blog.isEnabled: false` in `src/config.yaml` (see O-6)
-3. Rewrite `src/navigation.ts` — anchor links only for a one-pager
-4. Rewrite `src/config.yaml` — site name, URL, metadata, OG defaults; remove the AstroWind Google verification ID and `@arthelokyo` Twitter handle
-5. Replace favicons in `src/assets/favicons/`
+1. ☐ Delete demo pages: `src/pages/homes/`, `src/pages/landing/`, `pricing.astro`, `services.astro`, `about.astro`, `contact.astro`
+2. ☐ Delete demo blog: `src/pages/[...blog]/`, `src/data/post/*`, `rss.xml.ts`; set `apps.blog.isEnabled: false` in `src/config.yaml` (see O-6)
+3. ☐ Rewrite `src/navigation.ts` — anchor links only for a one-pager. *(The homepage overrides header and footer inline, so the demo nav is invisible on `/` but still ships on every demo page.)*
+4. ☑ `src/config.yaml` — site name, URL, metadata, OG description; cleared the AstroWind Google verification ID and `@arthelokyo` Twitter handle
+5. ☐ Replace favicons in `src/assets/favicons/`
 
 ### Phase 1 — Build the home page
-6. Retheme `CustomStyles.astro` per §2.4
-7. Build `src/pages/index.astro` composing §3.1–3.8 from existing widgets
-8. Add images to `src/assets/images/`, `resume.pdf` to `public/`
-9. Restyle 404
+6. ☑ Retheme `CustomStyles.astro` per §2.4 — dark-first, near-monochrome, burnt orange accent
+7. ☑ `src/pages/index.astro` composing §3.1, §3.3, §3.4, §3.8. **§3.5 Skills, §3.6 About and §3.7 Awards are not built** — About needs your voice (see its edge case), and the other two are quick once you confirm O-3
+8. ☑ New widget `HeroIntro.astro` — §3.1, editorial hero with inline-link prose
+9. ☑ New widget `ExperienceList.astro` — §3.4, divided list rather than `Timeline.astro`
+10. ☑ `Projects.astro` recoloured to the monochrome palette (was blue-tinted `slate-900`)
+11. ☑ Logo shows your name instead of "🚀 AstroWind"; minimal footer on `/`
+12. ☑ `resume.pdf` copied to `public/` — **see the phone-number warning below**
+13. ☐ Project images — blocked on O-7
+14. ☐ Restyle 404
 
 ### Phase 2 — Verify
 10. `npm run check` → clean
@@ -286,7 +316,8 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 | # | Question | My recommendation |
 |---|---|---|
-| **O-1** | Gemma **3 4B** or Gemma **4 E4B**? Your resume says both. | Fix the resume too, whichever it is |
+| **O-1** | Gemma **3 4B** or Gemma **4 E4B**? Your resume says both. | Résumé-only now that Investly is off the site — but the PDF is linked from the hero, so a recruiter still sees the contradiction. Fix it. |
+| **O-8** | `public/resume.pdf` carries your **phone number**. Publishing it puts (979) 575-3148 on a public URL for scrapers. | Your call. Either accept it, or export a web version of the résumé with the phone removed and ship that as `resume.pdf`. |
 | **O-2** | UT burnt orange, or something not tied to the school? | Burnt orange — instantly legible, and you're a current student |
 | **O-3** | Stats: include the YouTube numbers, or keep all four engineering? | Include them. 20k subscribers is rarer than a good GPA. |
 | **O-4** | Can you publish Texas A&M research imagery? | Check with your PI before using it |

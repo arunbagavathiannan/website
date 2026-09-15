@@ -497,3 +497,39 @@ export interface Integrations extends Omit<Headline, 'classes'>, Widget {
   items?: Array<Integration>;
   columns?: number;
 }
+
+export interface SocialLink {
+  label: string;
+  href: string;
+  icon: string;
+}
+
+export interface HeroIntro extends Widget {
+  /** Display name, rendered as the page <h1>. Accepts inline HTML. */
+  name?: string;
+  /** Introductory prose. Accepts inline HTML so links can sit inside sentences. */
+  intro?: string;
+  /** Small uppercase line above the name. */
+  tagline?: string;
+  /** Text link to a résumé or CV. */
+  resume?: { text?: string; href: string; icon?: string };
+  socials?: Array<SocialLink>;
+}
+
+export interface ExperienceItem {
+  organization?: string;
+  /** Makes the organisation name an external link. */
+  href?: string;
+  role?: string;
+  location?: string;
+  dates?: string;
+  /** Accepts inline HTML. */
+  description?: string;
+  logo?: string | ImageMetadata;
+  /** Icon fallback when there is no logo. */
+  icon?: string;
+}
+
+export interface ExperienceList extends Omit<Headline, 'classes'>, Widget {
+  items?: Array<ExperienceItem>;
+}

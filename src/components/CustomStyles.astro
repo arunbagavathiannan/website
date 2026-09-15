@@ -2,6 +2,10 @@
 // Font family is provided by Astro's native Fonts API (see `fonts` in
 // astro.config.ts and <Font /> in Layout.astro), exposed as `--font-inter`.
 // To switch typefaces, change the `fonts` entry and repoint `--aw-font-*` below.
+//
+// Palette is near-monochrome by design: the page is black, white and grey, and
+// burnt orange is spent only on links, hover states and the one tagline above
+// the name. Keeping the accent scarce is what makes it read as emphasis.
 ---
 
 <style is:inline>
@@ -10,19 +14,21 @@
     --aw-font-serif: var(--font-inter);
     --aw-font-heading: var(--font-inter);
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    /* UT Austin burnt orange. */
+    --aw-color-primary: rgb(191 87 0);
+    --aw-color-secondary: rgb(154 70 0);
+    --aw-color-accent: rgb(51 63 72);
 
-    --aw-color-text-heading: rgb(0 0 0);
-    --aw-color-text-default: rgb(16 16 16);
-    --aw-color-text-muted: rgb(16 16 16 / 66%);
-    --aw-color-bg-page: rgb(255 255 255);
+    --aw-color-text-heading: rgb(10 10 11);
+    --aw-color-text-default: rgb(28 28 30);
+    --aw-color-text-muted: rgb(28 28 30 / 68%);
+    --aw-color-bg-page: rgb(250 250 249);
 
-    --aw-color-bg-page-dark: rgb(8 9 10);
+    --aw-color-bg-page-dark: rgb(17 17 18);
 
     ::selection {
-      background-color: lavender;
+      background-color: rgb(191 87 0);
+      color: rgb(250 250 249);
     }
   }
 
@@ -31,18 +37,19 @@
     --aw-font-serif: var(--font-inter);
     --aw-font-heading: var(--font-inter);
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    /* Brightened so burnt orange still carries on a near-black ground. */
+    --aw-color-primary: rgb(240 110 20);
+    --aw-color-secondary: rgb(214 94 12);
+    --aw-color-accent: rgb(148 163 184);
 
-    --aw-color-text-heading: rgb(247, 248, 248);
-    --aw-color-text-default: rgb(229 236 246);
-    --aw-color-text-muted: rgb(229 236 246 / 66%);
-    --aw-color-bg-page: rgb(8 9 10);
+    --aw-color-text-heading: rgb(250 250 249);
+    --aw-color-text-default: rgb(228 228 231);
+    --aw-color-text-muted: rgb(228 228 231 / 68%);
+    --aw-color-bg-page: rgb(17 17 18);
 
     ::selection {
-      background-color: black;
-      color: snow;
+      background-color: rgb(240 110 20);
+      color: rgb(17 17 18);
     }
   }
 </style>

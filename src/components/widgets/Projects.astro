@@ -39,7 +39,7 @@ const columnsClass = getColumnsClass(columns, '');
             <Card
               href={href}
               class:list={[
-                'group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-900 shadow-sm',
+                'group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-white/[0.03] shadow-sm',
                 href ? 'transition hover:-translate-y-0.5 hover:shadow-lg hover:border-primary/40' : '',
               ]}
             >
@@ -65,7 +65,7 @@ const columnsClass = getColumnsClass(columns, '');
                 {tags && tags.length > 0 && (
                   <ul class="mb-3 flex flex-wrap gap-1.5 list-none">
                     {tags.map((tag) => (
-                      <li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-muted dark:bg-slate-800">
+                      <li class="rounded-full bg-black/5 px-2.5 py-0.5 text-xs font-medium text-muted dark:bg-white/10">
                         {tag}
                       </li>
                     ))}

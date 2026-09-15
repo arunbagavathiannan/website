@@ -1,0 +1,106 @@
+---
+import { Icon } from 'astro-icon/components';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import type { HeroIntro as Props } from '~/types';
+
+// Editorial hero: an oversized name, a prose introduction carrying its own
+// inline links, and a row of monochrome social squares. Deliberately has no
+// image and no buttons — the paragraph does the work a Hero's CTA row usually
+// does, so the claims stay in sentences instead of being broken into chrome.
+
+const {
+  name = await Astro.slots.render('name'),
+  intro = await Astro.slots.render('intro'),
+  tagline,
+  resume,
+  socials = [],
+
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper
+  id={id}
+  isDark={isDark}
+  containerClass={`max-w-5xl mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
+  bg={bg}
+>
+  {tagline && <p class="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary">{tagline}</p>}
+
+  {
+    name && (
+      <h1
+        class="mb-8 text-4xl font-extrabold leading-[0.95] tracking-tight text-heading break-words hyphens-auto sm:text-6xl sm:hyphens-none md:text-7xl lg:text-8xl"
+        set:html={name}
+      />
+    )
+  }
+
+  {
+    intro && (
+      <div
+        class="prose-hero max-w-3xl text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed"
+        set:html={intro}
+      />
+    )
+  }
+
+  {
+    resume && (
+      <a
+        class="group mt-10 inline-flex items-center gap-1.5 text-base font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-lg"
+        href={resume.href}
+        target={resume.href?.startsWith('http') ? '_blank' : undefined}
+        rel={resume.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {resume.text ?? 'View Résumé'}
+        <Icon
+          name={resume.icon ?? 'tabler:arrow-up-right'}
+          class="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+        />
+      </a>
+    )
+  }
+
+  {
+    socials.length > 0 && (
+      <ul class="mt-10 flex flex-wrap items-center gap-3 list-none">
+        {socials.map(({ label, href, icon }) => (
+          <li>
+            <a
+              class="flex h-11 w-11 items-center justify-center rounded-lg bg-heading text-[var(--aw-color-bg-page)] transition hover:bg-primary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              href={href}
+              aria-label={label}
+              target={href?.startsWith('http') ? '_blank' : undefined}
+              rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              <Icon name={icon} class="h-6 w-6" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</WidgetWrapper>
+
+<style>
+  /* Inline links inside the intro paragraph are the navigation device of this
+     hero, so they need to read as links without the paragraph turning blue. */
+  .prose-hero :global(a) {
+    color: var(--aw-color-text-heading);
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.25em;
+    font-weight: 500;
+    transition: color 0.15s ease-in;
+  }
+  .prose-hero :global(a:hover) {
+    color: var(--aw-color-primary);
+  }
+  .prose-hero :global(p + p) {
+    margin-top: 1.25rem;
+  }
+</style>

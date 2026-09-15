@@ -1,30 +1,30 @@
 site:
-  name: AstroWind
-  site: 'https://astrowind.vercel.app'
+  name: Arun Bagavathiannan
+  site: 'https://astrowind-one-opal.vercel.app'
   base: '/'
   trailingSlash: false
 
-  googleSiteVerificationId: orcPxI47GSa-cRvY11tUe6iGg2IO_RPvnA1q95iEM3M
+  googleSiteVerificationId: null
 
 # Default SEO metadata
 metadata:
   title:
-    default: AstroWind
-    template: '%s — AstroWind'
-  description: "\U0001F680 Suitable for Startups, Small Business, Sass Websites, Professional Portfolios, Marketing Websites, Landing Pages & Blogs."
+    default: Arun Bagavathiannan
+    template: '%s — Arun Bagavathiannan'
+  description: "Computer Science student at UT Austin. Technical Lead on UT Registration Plus, a Chrome extension used by 60,000+ students."
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: AstroWind
+    site_name: Arun Bagavathiannan
     images:
       - url: '~/assets/images/default.png'
         width: 1200
         height: 628
     type: website
   twitter:
-    handle: '@arthelokyo'
-    site: '@arthelokyo'
+    handle: null
+    site: null
     cardType: summary_large_image
 
 i18n:
