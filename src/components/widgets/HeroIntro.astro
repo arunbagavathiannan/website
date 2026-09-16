@@ -1,11 +1,12 @@
 ---
 import { Icon } from 'astro-icon/components';
+import Image from '~/components/common/Image.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import type { HeroIntro as Props } from '~/types';
 
 // Editorial hero: an oversized name, a prose introduction carrying its own
-// inline links, and a row of monochrome social squares. Deliberately has no
-// image and no buttons — the paragraph does the work a Hero's CTA row usually
+// inline links, a row of monochrome social squares, and an optional portrait
+// held to the right. The paragraph does the work a Hero's CTA row usually
 // does, so the claims stay in sentences instead of being broken into chrome.
 //
 // Unlike the other widgets this one reveals on first paint rather than on
@@ -18,88 +19,123 @@ const {
   tagline,
   resume,
   socials = [],
+  image,
 
   id,
   isDark = false,
   classes = {},
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
+
+const hasImage = Boolean(image);
 ---
 
 <WidgetWrapper
   id={id}
   isDark={isDark}
-  containerClass={`hero-intro max-w-5xl mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
+  containerClass={`hero-intro ${hasImage ? 'max-w-6xl' : 'max-w-5xl'} mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
   bg={bg}
 >
-  {
-    tagline && (
-      <p
-        class="hero-reveal mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary"
-        style="--reveal-delay: 0s"
-      >
-        {tagline}
-      </p>
-    )
-  }
+  <div class:list={['gap-10 lg:gap-16', hasImage ? 'md:grid md:grid-cols-12 md:items-center' : '']}>
+    <div class:list={[hasImage ? 'md:col-span-7' : '']}>
+      {
+        tagline && (
+          <p
+            class="hero-reveal mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary"
+            style="--reveal-delay: 0s"
+          >
+            {tagline}
+          </p>
+        )
+      }
 
-  {
-    name && (
-      <h1
-        class="hero-reveal mb-6 text-3xl font-extrabold leading-[1.05] tracking-tight text-heading break-words hyphens-auto sm:text-4xl sm:hyphens-none md:text-5xl lg:text-6xl"
-        style="--reveal-delay: 0.05s"
-        set:html={name}
-      />
-    )
-  }
+      {
+        name && (
+          <h1
+            class="hero-reveal mb-6 text-3xl font-extrabold leading-[1.05] tracking-tight text-heading break-words hyphens-auto sm:text-4xl sm:hyphens-none md:text-5xl lg:text-6xl"
+            style="--reveal-delay: 0.05s"
+            set:html={name}
+          />
+        )
+      }
 
-  {
-    intro && (
-      <div
-        class="hero-reveal prose-hero max-w-3xl text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed"
-        style="--reveal-delay: 0.2s"
-        set:html={intro}
-      />
-    )
-  }
+      {
+        intro && (
+          <div
+            class:list={[
+              'hero-reveal prose-hero text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed',
+              hasImage ? 'max-w-none' : 'max-w-3xl',
+            ]}
+            style="--reveal-delay: 0.2s"
+            set:html={intro}
+          />
+        )
+      }
 
-  {
-    resume && (
-      <a
-        class="hero-reveal group mt-10 inline-flex items-center gap-1.5 text-base font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-lg"
-        style="--reveal-delay: 0.34s"
-        href={resume.href}
-        target={resume.href?.startsWith('http') ? '_blank' : undefined}
-        rel={resume.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-      >
-        {resume.text ?? 'View Résumé'}
-        <Icon
-          name={resume.icon ?? 'tabler:arrow-up-right'}
-          class="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-        />
-      </a>
-    )
-  }
+      {
+        resume && (
+          <a
+            class="hero-reveal group mt-10 inline-flex items-center gap-1.5 text-base font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-lg"
+            style="--reveal-delay: 0.34s"
+            href={resume.href}
+            target={resume.href?.startsWith('http') ? '_blank' : undefined}
+            rel={resume.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+          >
+            {resume.text ?? 'View Résumé'}
+            <Icon
+              name={resume.icon ?? 'tabler:arrow-up-right'}
+              class="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </a>
+        )
+      }
 
-  {
-    socials.length > 0 && (
-      <ul class="hero-socials mt-10 flex flex-wrap items-center gap-3 list-none">
-        {socials.map(({ label, href, icon }, i) => (
-          <li class="hero-reveal" style={`--reveal-delay: ${0.46 + i * 0.06}s`}>
-            <a
-              class="flex h-11 w-11 items-center justify-center rounded-lg bg-heading text-[var(--aw-color-bg-page)] transition hover:bg-primary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              href={href}
-              aria-label={label}
-              target={href?.startsWith('http') ? '_blank' : undefined}
-              rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              <Icon name={icon} class="h-6 w-6" />
-            </a>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+      {
+        socials.length > 0 && (
+          <ul class="hero-socials mt-10 flex flex-wrap items-center gap-3 list-none">
+            {socials.map(({ label, href, icon }, i) => (
+              <li class="hero-reveal" style={`--reveal-delay: ${0.46 + i * 0.06}s`}>
+                <a
+                  class="flex h-11 w-11 items-center justify-center rounded-lg bg-heading text-[var(--aw-color-bg-page)] transition hover:bg-primary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  href={href}
+                  aria-label={label}
+                  target={href?.startsWith('http') ? '_blank' : undefined}
+                  rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
+                  <Icon name={icon} class="h-6 w-6" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    {
+      image && (
+        <figure class="hero-reveal mt-14 md:col-span-5 md:mt-0" style="--reveal-delay: 0.26s">
+          <div class="hero-portrait-shadow">
+            <div class="hero-portrait mx-auto aspect-[3/4] h-[clamp(18rem,52vh,30rem)] w-auto overflow-hidden rounded-2xl md:mr-0 md:ml-auto">
+              <Image
+                class="h-full w-full object-cover"
+                src={image.src}
+                alt={image.alt}
+                widths={[360, 560, 760]}
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 40vw, 420px"
+                width={560}
+                height={747}
+                layout="cover"
+                format="webp"
+                loading="eager"
+                fetchpriority="high"
+              />
+            </div>
+          </div>
+          {image.caption && <figcaption class="mt-3 text-right text-sm text-muted md:mt-1">{image.caption}</figcaption>}
+        </figure>
+      )
+    }
+  </div>
 </WidgetWrapper>
 
 <style>
@@ -120,12 +156,19 @@ const {
     margin-top: 1.25rem;
   }
 
-  /* WidgetWrapper's scroll-reveal would fight the load animation below — and
-     above the fold it has nothing useful to react to — so the hero container
-     opts out and each child animates itself instead. */
-  :global(.hero-intro) {
-    opacity: 1 !important;
-    animation: none !important;
+  /* The portrait's lower edge dissolves into the page rather than ending on a
+     line. A mask is used instead of an overlaid gradient because the page
+     background differs between themes — masking to transparent lets whatever
+     is behind show through, so one rule covers light and dark.
+     The shadow lives on the parent as a drop-shadow (not a box-shadow) because
+     drop-shadow follows the alpha channel: it fades out with the image instead
+     of drawing a hard rectangle under the faded edge. */
+  .hero-portrait {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 98%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 98%);
+  }
+  .hero-portrait-shadow {
+    filter: drop-shadow(0 18px 36px rgb(0 0 0 / 38%));
   }
 
   @media (prefers-reduced-motion: no-preference) {

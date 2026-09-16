@@ -514,6 +514,13 @@ export interface HeroIntro extends Widget {
   /** Text link to a résumé or CV. */
   resume?: { text?: string; href: string; icon?: string };
   socials?: Array<SocialLink>;
+  /** Portrait shown beside the text at `md` and up. Its lower edge fades out. */
+  image?: {
+    src: ImageMetadata | string;
+    alt: string;
+    /** Small line under the image, e.g. a location. */
+    caption?: string;
+  };
 }
 
 export interface ExperienceItem {

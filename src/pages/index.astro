@@ -1,6 +1,8 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 
+import fujiImage from '~/assets/images/mt-fuji.jpg';
+
 import Header from '~/components/widgets/Header.astro';
 import HeroIntro from '~/components/widgets/HeroIntro.astro';
 import ExperienceList from '~/components/widgets/ExperienceList.astro';
@@ -38,6 +40,7 @@ const metadata = {
     id="about"
     name="Arun Bagavathiannan"
     resume={{ text: 'View Résumé', href: '/resume.pdf' }}
+    image={{ src: fujiImage, alt: 'Arun standing above the clouds at dusk', caption: 'captured on Mt. Fuji' }}
     socials={[
       { label: 'LinkedIn', href: 'https://linkedin.com/in/arun-bagavathiannan', icon: 'tabler:brand-linkedin' },
       { label: 'GitHub', href: 'https://github.com/arunbagavathiannan', icon: 'tabler:brand-github' },
