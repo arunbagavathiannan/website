@@ -3,10 +3,13 @@ import Image from '~/components/common/Image.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import type { Photo as Props } from '~/types';
 
-// A single photograph used as a breath between sections. All four edges
-// dissolve into the page instead of ending on a line, which is why this is a
-// mask rather than an overlaid gradient: masking to transparent lets the page
-// background show through, so the same rule works in light and dark.
+// A single photograph used as a breath between sections. Deliberately carries
+// the same treatment as the hero portrait: rounded corners, a soft shadow, and
+// a top edge that dissolves into the page so the caption sitting above it
+// reads as part of the same object rather than a label stuck on top.
+//
+// No aspect ratio is imposed — each photo keeps its own, so a panorama stays a
+// panorama instead of being cropped to a standard frame.
 
 const {
   image,
@@ -27,36 +30,33 @@ const {
 >
   <figure class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
     {caption && <figcaption class="mb-3 text-right text-sm text-muted">{caption}</figcaption>}
-    <div class="photo-fade">
-      <Image
-        class="aspect-[16/9] w-full object-cover"
-        src={image.src}
-        alt={image.alt}
-        widths={[640, 960, 1280]}
-        sizes="(max-width: 1023px) 100vw, 1024px"
-        width={1280}
-        height={720}
-        layout="cover"
-        format="webp"
-        loading="lazy"
-      />
+    <div class="photo-shadow">
+      <div class="photo-fade w-full overflow-hidden rounded-2xl">
+        <Image
+          class="w-full"
+          src={image.src}
+          alt={image.alt}
+          widths={[640, 960, 1280, 1600]}
+          sizes="(max-width: 1023px) 100vw, 1024px"
+          layout="full-width"
+          format="webp"
+          loading="lazy"
+        />
+      </div>
     </div>
   </figure>
 </WidgetWrapper>
 
 <style>
-  /* Two gradients intersected: one fades top and bottom, the other left and
-     right. `mask-composite: intersect` keeps only what both leave opaque, so
-     the corners fall away too. Safari needs the -webkit- pair, and its legacy
-     keyword is `source-in` rather than `intersect`. */
+  /* Identical to the hero portrait: the top edge masks out to transparent so
+     the page shows through, and the shadow is a drop-shadow rather than a
+     box-shadow because drop-shadow follows the alpha channel — it fades away
+     with the image instead of drawing a hard edge across the faded part. */
   .photo-fade {
-    -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%),
-      linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%);
-    mask-image:
-      linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%),
-      linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 32%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 2%, #000 32%, #000 100%);
+  }
+  .photo-shadow {
+    filter: drop-shadow(0 18px 36px rgb(0 0 0 / 38%));
   }
 </style>
