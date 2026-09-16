@@ -535,6 +535,11 @@ export interface ExperienceItem {
   logo?: string | ImageMetadata;
   /** Icon fallback when there is no logo. */
   icon?: string;
+  /** Photo held to the right of the entry, its left edge fading into the text. */
+  image?: {
+    src: ImageMetadata | string;
+    alt: string;
+  };
 }
 
 export interface ExperienceList extends Omit<Headline, 'classes'>, Widget {

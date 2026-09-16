@@ -27,52 +27,90 @@ const {
 
   <ol class="list-none">
     {
-      items.map(({ organization, href, role, location, dates, description, logo, icon }) => (
+      items.map(({ organization, href, role, location, dates, description, logo, icon, image }) => (
         <li class="border-t border-black/10 py-8 first:border-t-0 first:pt-0 dark:border-white/10 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
-          <div class="flex gap-4 md:gap-5">
-            {(logo || icon) && (
-              <div class="hidden h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white sm:flex">
-                {logo ? (
-                  <Image src={logo} alt="" class="h-full w-full object-contain" width={96} height={96} loading="lazy" />
-                ) : (
-                  <Icon name={icon} class="h-6 w-6 text-primary" />
-                )}
+          <div class:list={['md:flex md:items-center', image ? 'md:gap-8' : '']}>
+            <div class="flex min-w-0 flex-1 gap-4 md:gap-5">
+              {(logo || icon) && (
+                <div class="hidden h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white sm:flex">
+                  {logo ? (
+                    <Image
+                      src={logo}
+                      alt=""
+                      class="h-full w-full object-contain"
+                      width={96}
+                      height={96}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <Icon name={icon} class="h-6 w-6 text-primary" />
+                  )}
+                </div>
+              )}
+
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-col gap-x-6 gap-y-1 md:flex-row md:items-baseline md:justify-between">
+                  <h3 class="text-xl font-bold leading-tight text-heading">
+                    {href ? (
+                      <a
+                        class="group inline-flex items-center gap-1 underline decoration-from-font underline-offset-4 transition hover:text-primary"
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {organization}
+                        <Icon
+                          name="tabler:arrow-up-right"
+                          class="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        />
+                      </a>
+                    ) : (
+                      organization
+                    )}
+                  </h3>
+                  {dates && <p class="shrink-0 font-mono text-sm text-muted md:text-right">{dates}</p>}
+                </div>
+
+                <div class="mt-1 flex flex-col gap-x-6 gap-y-1 md:flex-row md:items-baseline md:justify-between">
+                  {role && <p class="font-medium text-default">{role}</p>}
+                  {location && <p class="shrink-0 text-sm text-muted md:text-right">{location}</p>}
+                </div>
+
+                {description && <p class="mt-3 leading-relaxed text-muted" set:html={description} />}
+              </div>
+            </div>
+
+            {image && (
+              <div class="entry-media mt-6 shrink-0 md:mt-0 md:w-64 md:border-l md:border-black/10 md:pl-8 lg:w-80 dark:md:border-white/10">
+                <div class="entry-media-fade overflow-hidden rounded-xl">
+                  <Image
+                    class="aspect-[4/3] w-full object-cover"
+                    src={image.src}
+                    alt={image.alt}
+                    widths={[320, 640]}
+                    sizes="(max-width: 767px) 100vw, 320px"
+                    width={640}
+                    height={480}
+                    layout="cover"
+                    format="webp"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             )}
-
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-col gap-x-6 gap-y-1 md:flex-row md:items-baseline md:justify-between">
-                <h3 class="text-xl font-bold leading-tight text-heading">
-                  {href ? (
-                    <a
-                      class="group inline-flex items-center gap-1 underline decoration-from-font underline-offset-4 transition hover:text-primary"
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {organization}
-                      <Icon
-                        name="tabler:arrow-up-right"
-                        class="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                      />
-                    </a>
-                  ) : (
-                    organization
-                  )}
-                </h3>
-                {dates && <p class="shrink-0 font-mono text-sm text-muted md:text-right">{dates}</p>}
-              </div>
-
-              <div class="mt-1 flex flex-col gap-x-6 gap-y-1 md:flex-row md:items-baseline md:justify-between">
-                {role && <p class="font-medium text-default">{role}</p>}
-                {location && <p class="shrink-0 text-sm text-muted md:text-right">{location}</p>}
-              </div>
-
-              {description && <p class="mt-3 leading-relaxed text-muted" set:html={description} />}
-            </div>
           </div>
         </li>
       ))
     }
   </ol>
 </WidgetWrapper>
+
+<style>
+  /* The photo's left edge dissolves into the entry text rather than butting
+     against it. The divider is a real border on the column, so it stays a
+     crisp line even where the image beside it has faded to nothing. */
+  .entry-media-fade {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 52%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 52%);
+  }
+</style>

@@ -1,7 +1,8 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 
-import fujiImage from '~/assets/images/mt-fuji.jpg';
+import fujiImage from '~/assets/images/mt-fuji-horizon.jpg';
+import chiikawaImage from '~/assets/images/chiikawa.jpg';
 import logoLonghornDevelopers from '~/assets/images/logos/longhorn-developers.png';
 import logoYouTube from '~/assets/images/logos/youtube.png';
 import logoTexasAM from '~/assets/images/logos/texas-am.png';
@@ -46,7 +47,11 @@ const metadata = {
     id="about"
     name="Arun Bagavathiannan"
     resume={{ text: 'View Résumé', href: '/resume.pdf' }}
-    image={{ src: fujiImage, alt: 'Arun standing above the clouds at dusk', caption: 'captured on Mt. Fuji' }}
+    image={{
+      src: fujiImage,
+      alt: 'Arun pointing toward the horizon above the clouds at sunrise',
+      caption: 'captured on Mt. Fuji',
+    }}
     socials={[
       { label: 'LinkedIn', href: 'https://linkedin.com/in/arun-bagavathiannan', icon: 'tabler:brand-linkedin' },
       { label: 'GitHub', href: 'https://github.com/arunbagavathiannan', icon: 'tabler:brand-github' },
@@ -59,7 +64,8 @@ const metadata = {
         I'm a Computer Science student at UT Austin. I lead a team of five on{' '}
         <a href="https://github.com/Longhorn-Developers/UT-Registration-Plus" target="_blank" rel="noopener noreferrer"
           >UT Registration Plus</a
-        >, the Chrome extension 60,000+ students use to build their schedules. I have presented Machine Learning research conducted at Texas A&amp;M in Vancouver and Spain, and I've spent five years growing a{' '}
+        >, the Chrome extension 60,000+ students use to build their schedules. I have presented Machine Learning
+        research conducted at Texas A&amp;M in Vancouver and Spain, and I've spent five years growing a{' '}
         <a href="https://www.youtube.com/@orphicakm" target="_blank" rel="noopener noreferrer">YouTube channel</a>{
           ' '
         }past 20,000 subscribers.
@@ -138,8 +144,9 @@ const metadata = {
         location: 'Shinjuku, Tokyo, Japan',
         dates: 'Summer 2026',
         logo: logoUtIee,
+        image: { src: chiikawaImage, alt: 'A Chiikawa figure leaning against a wall in Tokyo' },
         description:
-          'Two months of coursework at Tokyo Tech: an introduction to probability and random processes for engineers, covering probability models and the computations typical in electrical engineering, alongside a contemporary approach to digital design that separates design from optimization tasks. The program included academic and industry visits and collaboration with Japanese students at Oberlin College.',
+          'Two months of coursework in Tokyo: an introduction to probability and random processes for engineers, covering probability models and the computations typical in electrical engineering, alongside a contemporary approach to digital design that separates design from optimization tasks. The program included academic and industry visits and collaboration with Japanese students on campus.',
       },
     ]}
   />

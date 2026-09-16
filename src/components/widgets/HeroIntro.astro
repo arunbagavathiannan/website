@@ -116,7 +116,7 @@ const hasImage = Boolean(image);
         <figure class="hero-reveal mt-14 md:col-span-5 md:mt-0" style="--reveal-delay: 0.26s">
           {image.caption && <figcaption class="mb-3 text-right text-sm text-muted">{image.caption}</figcaption>}
           <div class="hero-portrait-shadow">
-            <div class="hero-portrait mx-auto aspect-[3/4] h-[clamp(18rem,52vh,30rem)] w-auto overflow-hidden rounded-2xl md:mr-0 md:ml-auto">
+            <div class="hero-portrait aspect-[4/3] w-full overflow-hidden rounded-2xl">
               <Image
                 class="h-full w-full object-cover"
                 src={image.src}
