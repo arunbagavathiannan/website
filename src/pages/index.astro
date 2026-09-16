@@ -41,18 +41,19 @@ const metadata = {
       { label: 'LinkedIn', href: 'https://linkedin.com/in/arun-bagavathiannan', icon: 'tabler:brand-linkedin' },
       { label: 'GitHub', href: 'https://github.com/arunbagavathiannan', icon: 'tabler:brand-github' },
       { label: 'Email', href: 'mailto:arun.bagavathiannan@gmail.com', icon: 'tabler:mail' },
-      { label: 'YouTube', href: 'https://youtube.com', icon: 'tabler:brand-youtube' },
+      { label: 'YouTube', href: 'https://www.youtube.com/@orphicakm', icon: 'tabler:brand-youtube' },
     ]}
   >
     <Fragment slot="intro">
       <p>
         I'm a Computer Science student at UT Austin. I lead a team of five on{' '}
-        <a href="#projects">UT Registration Plus</a>, the Chrome extension{' '}
-        <a href="#projects">60,000+ students</a>{' '}use to build their schedules. Before that I trained{' '}
-        <a href="#projects">computer-vision models</a>{' '}for agricultural research at Texas A&amp;M, and I've spent
-        five years growing a{' '}
-        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">YouTube channel</a>{' '}past 20,000
-        subscribers.
+        <a href="https://github.com/Longhorn-Developers/UT-Registration-Plus" target="_blank" rel="noopener noreferrer"
+          >UT Registration Plus</a
+        >, the Chrome extension 60,000+ students use to build their schedules. Before that I trained computer-vision
+        models for agricultural research at Texas A&amp;M, and I've spent five years growing a{' '}
+        <a href="https://www.youtube.com/@orphicakm" target="_blank" rel="noopener noreferrer">YouTube channel</a>{
+          ' '
+        }past 20,000 subscribers.
       </p>
       <p>
         Different surfaces, same instinct: I like building things that get used, then measuring whether they actually
@@ -99,7 +100,7 @@ const metadata = {
       },
       {
         organization: 'YouTube',
-        href: 'https://youtube.com',
+        href: 'https://www.youtube.com/@orphicakm',
         role: 'Content Creator',
         dates: 'Jul 2021 — Present',
         icon: 'tabler:brand-youtube',
@@ -122,22 +123,20 @@ const metadata = {
         description:
           'The Chrome extension UT Austin students use to plan and register for classes. I lead the 5-person team building it.',
         tags: ['TypeScript', 'React', 'Chrome MV3'],
-        result: '60,000+ students',
         href: 'https://github.com/Longhorn-Developers/UT-Registration-Plus',
         linkText: 'View on GitHub',
       },
       {
         title: 'Breakout',
         description:
-          'In progress. A Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel’s baseline rather than raw view count. Parses <code>ytInitialData</code> instead of the quota-limited API. A TF-IDF niche filter builds weighted vocabulary from seed channels, surfacing adjacent outliers that keyword search misses.',
-        tags: ['JavaScript', 'Chrome MV3', 'TF-IDF', 'In progress'],
+          'A Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel’s baseline rather than raw view count. Parses <code>ytInitialData</code> instead of the quota-limited API. A TF-IDF niche filter builds weighted vocabulary from seed channels, surfacing adjacent outliers that keyword search misses.',
+        tags: ['JavaScript', 'Chrome MV3', 'TF-IDF'],
       },
       {
         title: 'Agricultural Weed Detection',
         description:
           'YOLOv8 object-detection pipeline built at Texas A&M, from a 100-image raw dataset to a production-ready model. OpenCV augmentation scaled training data 6×.',
         tags: ['Python', 'YOLOv8', 'OpenCV'],
-        result: '80%+ precision & recall',
       },
     ]}
   />
