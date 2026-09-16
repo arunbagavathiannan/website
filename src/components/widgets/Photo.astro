@@ -26,6 +26,7 @@ const {
   bg={bg}
 >
   <figure class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+    {caption && <figcaption class="mb-3 text-right text-sm text-muted">{caption}</figcaption>}
     <div class="photo-fade">
       <Image
         class="aspect-[16/9] w-full object-cover"
@@ -40,7 +41,6 @@ const {
         loading="lazy"
       />
     </div>
-    {caption && <figcaption class="mt-3 text-right text-sm text-muted">{caption}</figcaption>}
   </figure>
 </WidgetWrapper>
 
