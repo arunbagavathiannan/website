@@ -5,6 +5,7 @@ import Header from '~/components/widgets/Header.astro';
 import HeroIntro from '~/components/widgets/HeroIntro.astro';
 import ExperienceList from '~/components/widgets/ExperienceList.astro';
 import Projects from '~/components/widgets/Projects.astro';
+import VideoFeature from '~/components/widgets/VideoFeature.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Footer from '~/components/widgets/Footer.astro';
 
@@ -111,17 +112,9 @@ const metadata = {
   <Projects
     id="projects"
     title="Projects"
-    columns={3}
+    columns={2}
     classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl md:text-4xl' } }}
     items={[
-      {
-        title: 'UT Registration Plus',
-        description:
-          'The Chrome extension UT Austin students use to plan and register for classes. I lead the 5-person team building it.',
-        tags: ['TypeScript', 'React', 'Chrome MV3'],
-        href: 'https://github.com/Longhorn-Developers/UT-Registration-Plus',
-        linkText: 'View on GitHub',
-      },
       {
         title: 'Breakout',
         description:
@@ -129,10 +122,37 @@ const metadata = {
         tags: ['JavaScript', 'Chrome MV3', 'TF-IDF'],
       },
       {
-        title: 'Agricultural Weed Detection',
+        title: 'Investly',
         description:
-          'YOLOv8 object-detection pipeline built at Texas A&M, from a 100-image raw dataset to a production-ready model. OpenCV augmentation scaled training data 6×.',
-        tags: ['Python', 'YOLOv8', 'OpenCV'],
+          'An end-to-end LLM research pipeline in Python: RSS ingestion, local Gemma classification, ChromaDB RAG and autonomous daily paper trading against SPY. Measured news coverage against forward returns (ρ=+0.34, p=0.001 at 3 days, inverting by 1 month), then backtested and rejected the resulting strategy.',
+        tags: ['Python', 'Gemma', 'ChromaDB', 'RAG'],
+        href: 'https://github.com/arunbagavathiannan/investly',
+        linkText: 'View on GitHub',
+      },
+    ]}
+  />
+
+  <!-- Video ************************* -->
+
+  <VideoFeature
+    id="video"
+    title="On YouTube"
+    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl md:text-4xl' } }}
+    items={[
+      {
+        id: 'Z25p1DXcPxo',
+        playLabel: 'Play: WIS Editing COMPLETE Tutorial',
+        align: 'left',
+        metrics: [{ value: '76K+', label: 'views' }],
+        description:
+          'Engineered a step-by-step tutorial to educate tens of thousands of fellow editors to improve their video editing pipeline.',
+      },
+      {
+        id: 'MFCho06kTYI',
+        playLabel: 'Play: Explaining How Gojo Lost to Sukuna With Math',
+        align: 'right',
+        description:
+          'Created python scripts for math animations using <a href="https://www.manim.community/" target="_blank" rel="noopener noreferrer">Manim</a>, connecting complex fictional concepts to their mathematical reality.',
       },
     ]}
   />

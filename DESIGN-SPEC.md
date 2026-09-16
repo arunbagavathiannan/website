@@ -188,9 +188,8 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 | # | Title | Description | Tags | Result | Href |
 |---|---|---|---|---|---|
-| 1 | UT Registration Plus | Chrome extension (Manifest V3) giving UT students real-time course availability inside their calendar. I lead the 5-person team. | TypeScript, React, Chrome MV3 | `60,000+ students` | GitHub / Chrome Web Store |
-| 2 | Breakout | Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel's baseline. Parses `ytInitialData` instead of the quota-limited API. TF-IDF niche filter builds weighted vocabulary from seed channels. | JavaScript, Chrome MV3, TF-IDF | *(none)* | — |
-| 3 | Weed Detection (Texas A&M) | YOLOv8 object-detection pipeline from a 100-image raw dataset to a production model; OpenCV augmentation scaled training data 6×. | Python, YOLOv8, OpenCV | `80%+ precision & recall` | Conference slides / writeup |
+| 1 | Breakout | Chrome extension scoring YouTube videos against rolling channel medians. Parses `ytInitialData` instead of the quota-limited API. TF-IDF niche filter builds weighted vocabulary from seed channels. | JavaScript, Chrome MV3, TF-IDF | *(none)* | **none yet — see below** |
+| 2 | Investly | End-to-end LLM research pipeline: RSS ingestion, local Gemma classification, ChromaDB RAG, autonomous daily paper trading against SPY. Measured coverage vs forward returns (ρ=+0.34, p=0.001 at 3d), then backtested and rejected the strategy. | Python, Gemma, ChromaDB, RAG | *(none)* | GitHub |
 
 **Edge cases:**
 - **Breakout carries no `result` metric**, because there is no measured outcome to quote and R-4 forbids inventing one. At your direction the "In progress" prefix and tag were removed, so the card now reads as a shipped project — which matches résumé (3)'s past tense ("Built…", "shipped free against $13/mo incumbents"). **Your call, and the site and résumé now agree.** The risk is unchanged: if an interviewer opens it and it isn't usable, the card and the PDF are both wrong at once. Ship it, or soften both together.
@@ -262,6 +261,19 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 **Edge case:** Three lines don't justify a full-width widget with heavy padding. If it looks thin, merge it into §3.6 as a sidebar list.
 
 ---
+
+### §3.9 Video feature (added)
+**Widget:** `VideoFeature.astro` (new) — YouTube facade via `@astro-community/astro-embed-youtube`, alternating sides.
+
+| Video | Side | Metric | Copy |
+|---|---|---|---|
+| WIS Editing COMPLETE Tutorial | left | `76K+ views` | "Engineered a step-by-step tutorial…" |
+| Explaining How Gojo Lost to Sukuna With Math | right | none | "Created python scripts… using [Manim](https://www.manim.community/)…" |
+
+**Edge cases:**
+- **View counts are a hand-copied snapshot** (76,409 as of Sep 15, 2026). They go stale and nothing updates them. Live counts need the YouTube Data API and a key — out of scope per §1.5.
+- The facade loads a poster image, not an iframe, so two embeds cost ~2 images rather than ~1 MB of YouTube player. This is what keeps R-1 reachable.
+- The play button is recoloured to the site orange. YouTube red is the more universally recognised "this is a video" affordance; orange was chosen deliberately over that recognition.
 
 ### §3.8 Contact CTA
 **Widget:** `CallToAction.astro`

@@ -1,0 +1,98 @@
+---
+import { YouTube } from '@astro-community/astro-embed-youtube';
+import Headline from '~/components/ui/Headline.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import type { VideoFeature as Props } from '~/types';
+
+// Video alongside prose, alternating sides down the page. Uses the lite
+// facade rather than a real iframe: a poster image and a play button until
+// the visitor clicks, so two embeds cost one image each instead of the ~1 MB
+// and dozens of requests a pair of live YouTube players would add.
+
+const {
+  title = await Astro.slots.render('title'),
+  subtitle = await Astro.slots.render('subtitle'),
+  tagline = await Astro.slots.render('tagline'),
+  items = [],
+
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+  <Headline title={title} subtitle={subtitle} tagline={tagline} classes={classes?.headline as Record<string, string>} />
+
+  <div class="flex flex-col gap-14 md:gap-20">
+    {
+      items.map(({ id: videoId, description, metrics = [], playLabel, align = 'left' }) => (
+        <div class="grid items-center gap-8 md:grid-cols-12 md:gap-12 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+          <div
+            class:list={['video-frame md:col-span-7', align === 'right' ? 'md:order-2 md:col-start-6' : 'md:order-1']}
+          >
+            <YouTube id={videoId} playlabel={playLabel ?? 'Play video'} posterQuality="high" />
+          </div>
+
+          <div class:list={['md:col-span-5', align === 'right' ? 'md:order-1 md:row-start-1' : 'md:order-2']}>
+            {metrics.length > 0 && (
+              <dl class="mb-5 flex flex-wrap gap-x-8 gap-y-3">
+                {metrics.map((metric) => (
+                  <div>
+                    <dt class="sr-only">{metric.label}</dt>
+                    <dd class="text-3xl font-extrabold leading-none tracking-tight text-primary">{metric.value}</dd>
+                    <dd class="mt-1 text-sm uppercase tracking-[0.14em] text-muted">{metric.label}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+
+            {description && (
+              <p class="video-copy text-lg leading-relaxed text-muted text-pretty" set:html={description} />
+            )}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</WidgetWrapper>
+
+<style>
+  /* The facade ships its own styles. These round the corners, let the frame
+     fill its column instead of stopping at the library's 720px cap, and swap
+     YouTube's red play button for the site's orange — the class really is
+     `lyt-playbtn`, and the button is an SVG background image, so recolouring
+     it means replacing that image rather than setting a background colour. */
+  .video-frame :global(lite-youtube) {
+    max-width: 100%;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  .video-frame :global(lite-youtube > .lyt-playbtn) {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 68 48'%3E%3Cpath d='M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z' fill='%23F06E14'/%3E%3Cpath d='M45 24 27 14v20' fill='white'/%3E%3C/svg%3E");
+    filter: none;
+    opacity: 0.82;
+    transition:
+      opacity 0.15s ease-in,
+      transform 0.15s ease-in;
+  }
+  .video-frame :global(lite-youtube:hover > .lyt-playbtn),
+  .video-frame :global(lite-youtube > .lyt-playbtn:focus) {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  .video-copy :global(a) {
+    color: var(--aw-color-text-heading);
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.25em;
+    font-weight: 500;
+    transition: color 0.15s ease-in;
+  }
+  .video-copy :global(a:hover) {
+    color: var(--aw-color-primary);
+  }
+</style>

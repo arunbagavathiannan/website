@@ -533,3 +533,20 @@ export interface ExperienceItem {
 export interface ExperienceList extends Omit<Headline, 'classes'>, Widget {
   items?: Array<ExperienceItem>;
 }
+
+export interface VideoFeatureItem {
+  /** YouTube video id or full URL. */
+  id: string;
+  /** Accepts inline HTML so links can sit inside the sentence. */
+  description?: string;
+  /** Short figures shown above the description, e.g. `76K+ views`. */
+  metrics?: Array<{ value: string; label: string }>;
+  /** Accessible label for the play button. */
+  playLabel?: string;
+  /** Which side the video sits on at `md` and up. Defaults to `left`. */
+  align?: 'left' | 'right';
+}
+
+export interface VideoFeature extends Omit<Headline, 'classes'>, Widget {
+  items?: Array<VideoFeatureItem>;
+}
