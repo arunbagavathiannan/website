@@ -217,6 +217,19 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 ---
 
+### §3.10 Education (added)
+**Widget:** reuses `ExperienceList.astro` — the logo/org/role/dates/description shape fits a degree as well as a job.
+
+| Entry | Logo | Dates | Notes |
+|---|---|---|---|
+| UT Austin — B.S. Computer Science | Texas CS | Expected Spring 2028 | GPA 3.73; transferred in from ECE; coursework verbatim from the résumé |
+| Tokyo Institute of Technology — Logic and Probability | Texas IEE | Summer 2026 | UT Study Abroad, Tokyo |
+
+**Edge cases:**
+- **The UT program page lists this program as June 4 – July 30, 2027**, i.e. next summer. The site says Summer 2026 on your confirmation that yours was the 2026 run and the page is the current catalogue listing. If that is wrong, it is wrong in the direction that matters — claiming a completed programme.
+- The Tokyo description is a **rewording of UT's own program copy**, not written from scratch, per your instruction. It describes the programme only. Nothing on the page claims anything about what you personally did there — if you want a personal line, write it yourself and I'll place it.
+- The ECE logo is currently unused; the transfer is one line inside the CS entry rather than a second row, which avoids inventing transfer dates.
+
 ### §3.5 Skills
 **Widget:** `Features3.astro`, `columns={3}`, icon per group
 **Role:** Keyword coverage for humans skimming and for ATS-style keyword matching.

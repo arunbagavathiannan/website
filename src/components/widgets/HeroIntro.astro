@@ -6,7 +6,7 @@ import type { HeroIntro as Props } from '~/types';
 
 // Editorial hero: an oversized name, a prose introduction carrying its own
 // inline links, a row of monochrome social squares, and an optional portrait
-// held to the right. The paragraph does the work a Hero's CTA row usually
+// held to the right, its upper edge dissolving into the page. The paragraph does the work a Hero's CTA row usually
 // does, so the claims stay in sentences instead of being broken into chrome.
 //
 // Unlike the other widgets this one reveals on first paint rather than on
@@ -114,6 +114,7 @@ const hasImage = Boolean(image);
     {
       image && (
         <figure class="hero-reveal mt-14 md:col-span-5 md:mt-0" style="--reveal-delay: 0.26s">
+          {image.caption && <figcaption class="mb-3 text-right text-sm text-muted">{image.caption}</figcaption>}
           <div class="hero-portrait-shadow">
             <div class="hero-portrait mx-auto aspect-[3/4] h-[clamp(18rem,52vh,30rem)] w-auto overflow-hidden rounded-2xl md:mr-0 md:ml-auto">
               <Image
@@ -131,7 +132,6 @@ const hasImage = Boolean(image);
               />
             </div>
           </div>
-          {image.caption && <figcaption class="mt-3 text-right text-sm text-muted md:mt-1">{image.caption}</figcaption>}
         </figure>
       )
     }
@@ -164,8 +164,8 @@ const hasImage = Boolean(image);
      drop-shadow follows the alpha channel: it fades out with the image instead
      of drawing a hard rectangle under the faded edge. */
   .hero-portrait {
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 98%);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 98%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 32%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 2%, #000 32%, #000 100%);
   }
   .hero-portrait-shadow {
     filter: drop-shadow(0 18px 36px rgb(0 0 0 / 38%));

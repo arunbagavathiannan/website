@@ -31,9 +31,9 @@ const {
         <li class="border-t border-black/10 py-8 first:border-t-0 first:pt-0 dark:border-white/10 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
           <div class="flex gap-4 md:gap-5">
             {(logo || icon) && (
-              <div class="hidden h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/5 sm:flex dark:bg-white/10">
+              <div class="hidden h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white sm:flex">
                 {logo ? (
-                  <Image src={logo} alt="" class="h-full w-full object-cover" width={48} height={48} loading="lazy" />
+                  <Image src={logo} alt="" class="h-full w-full object-contain" width={96} height={96} loading="lazy" />
                 ) : (
                   <Icon name={icon} class="h-6 w-6 text-primary" />
                 )}
