@@ -2,7 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 
 import fujiImage from '~/assets/images/mt-fuji-horizon.jpg';
-import chiikawaImage from '~/assets/images/chiikawa.jpg';
+import chiikawaImage from '~/assets/images/chiikawa.png';
 import logoLonghornDevelopers from '~/assets/images/logos/longhorn-developers.png';
 import logoYouTube from '~/assets/images/logos/youtube.png';
 import logoTexasAM from '~/assets/images/logos/texas-am.png';
@@ -50,7 +50,7 @@ const metadata = {
     image={{
       src: fujiImage,
       alt: 'Arun pointing toward the horizon above the clouds at sunrise',
-      caption: 'captured on Mt. Fuji',
+      caption: 'sunrise on Mt. Fuji',
     }}
     socials={[
       { label: 'LinkedIn', href: 'https://linkedin.com/in/arun-bagavathiannan', icon: 'tabler:brand-linkedin' },
@@ -106,6 +106,7 @@ const metadata = {
         role: 'Content Creator',
         dates: 'Jul 2021 — Present',
         logo: logoYouTube,
+        logoScale: 1.3,
         description:
           'Grew a video-editing channel past 20,000 subscribers, 32M+ impressions and 7M+ views. Launched and ran buyorphic.com, selling editing presets for $500+ in its first year.',
       },
@@ -115,6 +116,7 @@ const metadata = {
         location: 'College Station, TX',
         dates: 'Jan 2025 — Mar 2025',
         logo: logoTexasAM,
+        logoScale: 1.15,
         description:
           'Took a raw 100-image dataset to a production YOLOv8 detection model at 80%+ precision and recall. Automated augmentation workflows in Python and OpenCV scaled training data 6×. Presented results at 3 conferences, including the Weed Science Society of America in Vancouver and the European Weed Research Society in Spain.',
       },

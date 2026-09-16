@@ -535,6 +535,9 @@ export interface ExperienceItem {
   logo?: string | ImageMetadata;
   /** Icon fallback when there is no logo. */
   icon?: string;
+  /** Scales the logo inside its chip. 1 = fit as-is; >1 zooms a wide or short
+   *  mark so it fills the square instead of sitting letterboxed. */
+  logoScale?: number;
   /** Photo held to the right of the entry, its left edge fading into the text. */
   image?: {
     src: ImageMetadata | string;

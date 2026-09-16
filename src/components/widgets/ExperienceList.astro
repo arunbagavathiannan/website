@@ -27,7 +27,7 @@ const {
 
   <ol class="list-none">
     {
-      items.map(({ organization, href, role, location, dates, description, logo, icon, image }) => (
+      items.map(({ organization, href, role, location, dates, description, logo, icon, image, logoScale }) => (
         <li class="border-t border-black/10 py-8 first:border-t-0 first:pt-0 dark:border-white/10 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
           <div class:list={['md:flex md:items-center', image ? 'md:gap-8' : '']}>
             <div class="flex min-w-0 flex-1 gap-4 md:gap-5">
@@ -81,7 +81,7 @@ const {
             </div>
 
             {image && (
-              <div class="entry-media mt-6 shrink-0 md:mt-0 md:w-64 md:border-l md:border-black/10 md:pl-8 lg:w-80 dark:md:border-white/10">
+              <div class="entry-media mt-6 shrink-0 md:mt-0 md:w-52 md:border-l md:border-black/10 md:pl-8 lg:w-64 dark:md:border-white/10">
                 <div class="entry-media-fade overflow-hidden rounded-xl">
                   <Image
                     class="aspect-[4/3] w-full object-cover"
