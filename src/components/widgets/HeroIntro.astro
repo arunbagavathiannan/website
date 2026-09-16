@@ -7,6 +7,10 @@ import type { HeroIntro as Props } from '~/types';
 // inline links, and a row of monochrome social squares. Deliberately has no
 // image and no buttons — the paragraph does the work a Hero's CTA row usually
 // does, so the claims stay in sentences instead of being broken into chrome.
+//
+// Unlike the other widgets this one reveals on first paint rather than on
+// scroll: it is already above the fold, so an intersection-driven fade would
+// either fire instantly or, worse, never.
 
 const {
   name = await Astro.slots.render('name'),
@@ -25,15 +29,25 @@ const {
 <WidgetWrapper
   id={id}
   isDark={isDark}
-  containerClass={`max-w-5xl mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
+  containerClass={`hero-intro max-w-5xl mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
   bg={bg}
 >
-  {tagline && <p class="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary">{tagline}</p>}
+  {
+    tagline && (
+      <p
+        class="hero-reveal mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary"
+        style="--reveal-delay: 0s"
+      >
+        {tagline}
+      </p>
+    )
+  }
 
   {
     name && (
       <h1
-        class="mb-8 text-4xl font-extrabold leading-[0.95] tracking-tight text-heading break-words hyphens-auto sm:text-6xl sm:hyphens-none md:text-7xl lg:text-8xl"
+        class="hero-reveal mb-6 text-3xl font-extrabold leading-[1.05] tracking-tight text-heading break-words hyphens-auto sm:text-4xl sm:hyphens-none md:text-5xl lg:text-6xl"
+        style="--reveal-delay: 0.05s"
         set:html={name}
       />
     )
@@ -42,7 +56,8 @@ const {
   {
     intro && (
       <div
-        class="prose-hero max-w-3xl text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed"
+        class="hero-reveal prose-hero max-w-3xl text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed"
+        style="--reveal-delay: 0.2s"
         set:html={intro}
       />
     )
@@ -51,7 +66,8 @@ const {
   {
     resume && (
       <a
-        class="group mt-10 inline-flex items-center gap-1.5 text-base font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-lg"
+        class="hero-reveal group mt-10 inline-flex items-center gap-1.5 text-base font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-lg"
+        style="--reveal-delay: 0.34s"
         href={resume.href}
         target={resume.href?.startsWith('http') ? '_blank' : undefined}
         rel={resume.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -67,9 +83,9 @@ const {
 
   {
     socials.length > 0 && (
-      <ul class="mt-10 flex flex-wrap items-center gap-3 list-none">
-        {socials.map(({ label, href, icon }) => (
-          <li>
+      <ul class="hero-socials mt-10 flex flex-wrap items-center gap-3 list-none">
+        {socials.map(({ label, href, icon }, i) => (
+          <li class="hero-reveal" style={`--reveal-delay: ${0.46 + i * 0.06}s`}>
             <a
               class="flex h-11 w-11 items-center justify-center rounded-lg bg-heading text-[var(--aw-color-bg-page)] transition hover:bg-primary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               href={href}
@@ -102,5 +118,33 @@ const {
   }
   .prose-hero :global(p + p) {
     margin-top: 1.25rem;
+  }
+
+  /* WidgetWrapper's scroll-reveal would fight the load animation below — and
+     above the fold it has nothing useful to react to — so the hero container
+     opts out and each child animates itself instead. */
+  :global(.hero-intro) {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-reveal {
+      animation: heroReveal 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+      animation-delay: var(--reveal-delay, 0s);
+    }
+
+    @keyframes heroReveal {
+      from {
+        opacity: 0;
+        filter: blur(12px);
+        transform: translate3d(-1.5rem, 0, 0);
+      }
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate3d(0, 0, 0);
+      }
+    }
   }
 </style>
