@@ -2,7 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 
 import fujiImage from '~/assets/images/mt-fuji-horizon.jpg';
-import chiikawaImage from '~/assets/images/chiikawa.png';
+import yellowstoneImage from '~/assets/images/yellowstone.jpg';
 import logoLonghornDevelopers from '~/assets/images/logos/longhorn-developers.png';
 import logoYouTube from '~/assets/images/logos/youtube.png';
 import logoTexasAM from '~/assets/images/logos/texas-am.png';
@@ -12,6 +12,7 @@ import logoUtIee from '~/assets/images/logos/ut-iee.png';
 import Header from '~/components/widgets/Header.astro';
 import HeroIntro from '~/components/widgets/HeroIntro.astro';
 import ExperienceList from '~/components/widgets/ExperienceList.astro';
+import Photo from '~/components/widgets/Photo.astro';
 import Projects from '~/components/widgets/Projects.astro';
 import VideoFeature from '~/components/widgets/VideoFeature.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
@@ -146,12 +147,15 @@ const metadata = {
         location: 'Shinjuku, Tokyo, Japan',
         dates: 'Summer 2026',
         logo: logoUtIee,
-        image: { src: chiikawaImage, alt: 'A Chiikawa figure leaning against a wall in Tokyo' },
         description:
-          'Two months of coursework in Tokyo: an introduction to probability and random processes for engineers, covering probability models and the computations typical in electrical engineering, alongside a contemporary approach to digital design that separates design from optimization tasks. The program included academic and industry visits and collaboration with Japanese students on campus.',
+          'Completed 2 months of global immersion in Japan with frequent industry visits and collaboration with Japanese students. Coursework includes ECE 316 (Digital Logic Design) & ECE 351K (Probability & Random Processes.)',
       },
     ]}
   />
+
+  <!-- Photo ************************* -->
+
+  <Photo image={{ src: yellowstoneImage, alt: 'A river at dusk in Yellowstone National Park' }} />
 
   <!-- Projects ********************** -->
 
@@ -164,13 +168,13 @@ const metadata = {
       {
         title: 'Breakout',
         description:
-          'A Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel’s baseline rather than raw view count. Parses <code>ytInitialData</code> instead of the quota-limited API. A TF-IDF niche filter builds weighted vocabulary from seed channels, surfacing adjacent outliers that keyword search misses.',
+          '– A Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel’s baseline rather than raw view count.<br />– Parses <code>ytInitialData</code> instead of the quota-limited API. A TF-IDF niche filter builds weighted vocabulary from seed channels, surfacing adjacent outliers that keyword search misses.',
         tags: ['JavaScript', 'Chrome MV3', 'TF-IDF'],
       },
       {
         title: 'Investly',
         description:
-          'An end-to-end LLM research pipeline in Python: RSS ingestion, local Gemma classification, ChromaDB RAG and autonomous daily paper trading against SPY. Measured news coverage against forward returns (ρ=+0.34, p=0.001 at 3 days, inverting by 1 month), then backtested and rejected the resulting strategy.',
+          'An end-to-end LLM research pipeline in Python: RSS ingestion, local Gemma classification, ChromaDB RAG and autonomous daily paper trading against SPY.',
         tags: ['Python', 'Gemma', 'ChromaDB', 'RAG'],
         href: 'https://github.com/arunbagavathiannan/investly',
         linkText: 'View on GitHub',

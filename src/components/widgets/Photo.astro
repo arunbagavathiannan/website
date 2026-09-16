@@ -1,0 +1,62 @@
+---
+import Image from '~/components/common/Image.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import type { Photo as Props } from '~/types';
+
+// A single photograph used as a breath between sections. All four edges
+// dissolve into the page instead of ending on a line, which is why this is a
+// mask rather than an overlaid gradient: masking to transparent lets the page
+// background show through, so the same rule works in light and dark.
+
+const {
+  image,
+  caption,
+
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper
+  id={id}
+  isDark={isDark}
+  containerClass={`max-w-5xl mx-auto py-6 md:py-10 ${classes?.container ?? ''}`}
+  bg={bg}
+>
+  <figure class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+    <div class="photo-fade">
+      <Image
+        class="aspect-[16/9] w-full object-cover"
+        src={image.src}
+        alt={image.alt}
+        widths={[640, 960, 1280]}
+        sizes="(max-width: 1023px) 100vw, 1024px"
+        width={1280}
+        height={720}
+        layout="cover"
+        format="webp"
+        loading="lazy"
+      />
+    </div>
+    {caption && <figcaption class="mt-3 text-right text-sm text-muted">{caption}</figcaption>}
+  </figure>
+</WidgetWrapper>
+
+<style>
+  /* Two gradients intersected: one fades top and bottom, the other left and
+     right. `mask-composite: intersect` keeps only what both leave opaque, so
+     the corners fall away too. Safari needs the -webkit- pair, and its legacy
+     keyword is `source-in` rather than `intersect`. */
+  .photo-fade {
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%),
+      linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%);
+    mask-image:
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%),
+      linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+</style>
