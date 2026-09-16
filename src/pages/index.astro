@@ -46,7 +46,7 @@ const metadata = {
   >
     <Fragment slot="intro">
       <p>
-        I'm a Computer Science student at UT Austin. I lead a team of six on{' '}
+        I'm a Computer Science student at UT Austin. I lead a team of five on{' '}
         <a href="#projects">UT Registration Plus</a>, the Chrome extension{' '}
         <a href="#projects">60,000+ students</a>{' '}use to build their schedules. Before that I trained{' '}
         <a href="#projects">computer-vision models</a>{' '}for agricultural research at Texas A&amp;M, and I've spent
@@ -76,7 +76,7 @@ const metadata = {
         dates: 'Aug 2026 — Present',
         icon: 'tabler:code',
         description:
-          'Promoted from Software Engineer to lead a team of 6. Ran end-to-end hiring for the developer fellowship — screened 80+ applications, interviewed finalists, selected 5 engineers at roughly a 6% acceptance rate.',
+          'Promoted from Software Engineer to lead a team of 5. Ran end-to-end hiring for the developer fellowship — screened 80+ applications, interviewed finalists, selected 4 engineers at roughly a 5% acceptance rate.',
       },
       {
         organization: 'Longhorn Developers',
@@ -120,16 +120,16 @@ const metadata = {
       {
         title: 'UT Registration Plus',
         description:
-          'The Chrome extension UT Austin students use to plan and register for classes. I lead the 6-person team building it.',
+          'The Chrome extension UT Austin students use to plan and register for classes. I lead the 5-person team building it.',
         tags: ['TypeScript', 'React', 'Chrome MV3'],
         result: '60,000+ students',
         href: 'https://github.com/Longhorn-Developers/UT-Registration-Plus',
         linkText: 'View on GitHub',
       },
       {
-        title: 'ViewTube',
+        title: 'Breakout',
         description:
-          'In progress. A Chrome extension surfacing only outlier YouTube videos — ones far outperforming their own channel’s baseline. Scores each against a rolling median of that channel’s <em>prior</em> uploads, so a 2020 video is judged against 2020, not against a channel that has since grown 50×. Local-only: no server, no API key, no account.',
+          'In progress. A Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel’s baseline rather than raw view count. Parses <code>ytInitialData</code> instead of the quota-limited API. A TF-IDF niche filter builds weighted vocabulary from seed channels, surfacing adjacent outliers that keyword search misses.',
         tags: ['JavaScript', 'Chrome MV3', 'TF-IDF', 'In progress'],
       },
       {

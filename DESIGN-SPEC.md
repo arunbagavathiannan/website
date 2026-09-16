@@ -5,7 +5,7 @@
 **Already implemented** (builds clean, `astro check` 0 errors): the homepage — hero, experience, projects, contact — plus the retheme, two new widgets, and site config. **Not implemented:** the Phase 0 demo-content strip, Skills (§3.5), About (§3.6), Awards (§3.7). See Section 4.
 
 **Stack:** AstroWind fork (`arunbagavathiannan/astrowind`) — Astro 7, Tailwind v4, static output, deployed on Vercel.
-**Source of truth for content:** `Arun Bagavathiannan Resume (2).pdf` (Sep 15, 2026).
+**Source of truth for content:** `Arun Bagavathiannan Resume (3).pdf` (Sep 15, 2026, 7:18 pm) — supersedes resume (2).
 
 ---
 
@@ -23,7 +23,7 @@ A single-page-first personal site that makes a recruiter or hiring manager belie
 | Input | Source | Format |
 |---|---|---|
 | Bio, education, experience, projects, skills, awards | Resume PDF | Hand-authored into `.astro` page files |
-| Resume PDF itself | `~/Downloads/Arun Bagavathiannan Resume (2).pdf` | Copied to `public/resume.pdf` |
+| Resume PDF itself | `~/Downloads/Arun Bagavathiannan Resume (3).pdf` | Copied to `public/resume.pdf` |
 | Project screenshots / logos | **MISSING — you must supply** | `src/assets/images/*` |
 | Headshot | **MISSING — you must supply** | `src/assets/images/arun.jpg` |
 | Social links | Resume header | Hardcoded in `navigation.ts` |
@@ -66,7 +66,7 @@ A single-page-first personal site that makes a recruiter or hiring manager belie
 
 ```
 /                    Home — the whole pitch, one scroll (§3.1–3.8)
-/projects/investly   Deep dive: Investly            ← Phase 2
+/projects/breakout   Deep dive: Breakout            ← Phase 2
 /projects/utrp       Deep dive: UT Registration Plus ← Phase 2
 /resume.pdf          Static file in public/
 /404                 Keep the fork's, restyled
@@ -155,7 +155,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 **Content:**
 - Title: `Arun Bagavathiannan`
 - Tagline: `CS @ UT Austin · Class of 2028`
-- Subtitle: *I lead a team of 6 building a Chrome extension that 60,000+ UT students use to register for classes. Before that I trained computer-vision models for agricultural research and grew a YouTube channel to 20,000 subscribers.*
+- Subtitle: *I lead a team of 5 building a Chrome extension that 60,000+ UT students use to register for classes. Before that I trained computer-vision models for agricultural research and grew a YouTube channel to 20,000 subscribers.*
 - Actions: `[primary: "View my work" → #projects]`, `[secondary: "Résumé (PDF)" → /resume.pdf]`
 - Image: headshot, or a screenshot of UTRP in use
 
@@ -188,14 +188,14 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 | # | Title | Description | Tags | Result | Href |
 |---|---|---|---|---|---|
-| 1 | UT Registration Plus | Chrome extension (Manifest V3) giving UT students real-time course availability inside their calendar. I lead the 6-person team. | TypeScript, React, Chrome MV3 | `60,000+ students` | GitHub / Chrome Web Store |
-| 2 | ViewTube | Chrome extension surfacing only outlier YouTube videos — ones far outperforming their own channel's baseline. Scores each against a rolling median of that channel's *prior* uploads. Local-only: no server, no API key, no account. | JavaScript, Chrome MV3, TF-IDF, In progress | *(none — not built yet)* | — |
+| 1 | UT Registration Plus | Chrome extension (Manifest V3) giving UT students real-time course availability inside their calendar. I lead the 5-person team. | TypeScript, React, Chrome MV3 | `60,000+ students` | GitHub / Chrome Web Store |
+| 2 | Breakout | Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel's baseline. Parses `ytInitialData` instead of the quota-limited API. TF-IDF niche filter builds weighted vocabulary from seed channels. | JavaScript, Chrome MV3, TF-IDF, In progress | *(none — not shipped yet)* | — |
 | 3 | Weed Detection (Texas A&M) | YOLOv8 object-detection pipeline from a 100-image raw dataset to a production model; OpenCV augmentation scaled training data 6×. | Python, YOLOv8, OpenCV | `80%+ precision & recall` | Conference slides / writeup |
 
 **Edge cases:**
-- **ViewTube does not exist yet.** R-4 and R-6 apply hardest here. The card carries no `result` metric and leads with "In progress." — because inventing "surfaces 10x outliers" for unwritten software is exactly the fabrication those requirements exist to prevent. It also carries an `In progress` tag. **This is the honest framing, and it is weaker than a shipped project.** If you'd rather not show unbuilt work at all, cut it to two cards; the grid handles `columns={2}` fine. My recommendation is to keep it — a designed-but-unbuilt system with a real architecture doc still shows how you think, as long as it says so.
-- ViewTube replaced Investly at your request. **Investly is the stronger résumé item today** — it's finished, it has a measured result, and rejecting your own strategy is a genuine signal of judgment. Consider showing both once ViewTube ships.
-- Missing images: the widget renders a card without one, but three image-less cards look bare. Need at least a screenshot each. UTRP → Chrome Web Store screenshot. ViewTube → a badge-injection mockup once it exists. Weed detection → an annotated detection frame (confirm you're allowed to publish A&M research imagery — **Open Question O-4**).
+- **Breakout is not shipped yet.** R-4 and R-6 apply hardest here. The card carries no `result` metric and leads with "In progress." — because inventing "surfaces 10x outliers" for unwritten software is exactly the fabrication those requirements exist to prevent. It also carries an `In progress` tag. **This is the honest framing, and it is weaker than a shipped project.** If you'd rather not show unbuilt work at all, cut it to two cards; the grid handles `columns={2}` fine. My recommendation is to keep it — a designed-but-unbuilt system with a real architecture doc still shows how you think, as long as it says so.
+- Breakout (formerly named ViewTube in an earlier draft) replaced Investly at your request. **Investly is the stronger résumé item today** — it's finished, it has a measured result, and rejecting your own strategy is a genuine signal of judgment. Consider showing both once Breakout ships.
+- Missing images: the widget renders a card without one, but three image-less cards look bare. Need at least a screenshot each. UTRP → Chrome Web Store screenshot. Breakout → a badge-injection screenshot once it exists. Weed detection → an annotated detection frame (confirm you're allowed to publish A&M research imagery — **Open Question O-4**).
 - `result` is small and easy to miss. It's the highest-value text on the card; verify visual weight after first build.
 
 ---
@@ -206,7 +206,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 | Date | Title | Description | Flags |
 |---|---|---|---|
-| Aug 2026 – Present | Technical Lead, UT Registration Plus | Promoted from Software Engineer. Lead 6 developers. Ran the fellowship hiring: 80+ applications screened, 5 engineers selected (~6% acceptance). | `highlight: true` |
+| Aug 2026 – Present | Technical Lead, UT Registration Plus | Promoted from Software Engineer. Lead 5 developers. Ran the fellowship hiring: 80+ applications screened, 4 engineers selected (~5% acceptance). | `highlight: true` |
 | Jan 2026 – Aug 2026 | Software Engineer, UT Registration Plus | Built the Course Status Checker (cited in UT CS News), a throttled refresh system in React/TS, and a reactive store syncing service-worker and UI state. | |
 | Jan 2025 – Mar 2025 | ML Research Intern, Texas A&M | YOLOv8 detection pipeline; presented at 3 conferences including WSSA (Vancouver) and EWRS (Spain). | |
 | Jul 2021 – Present | Content Creator, YouTube | 20k subscribers, 32M+ impressions. Launched buyorphic.com, $500+ in preset sales. | |
@@ -229,7 +229,8 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 | AI / ML | LLM inference, RAG pipelines, ChromaDB, model training & validation, Claude API, MCP, Ollama | `tabler:brain` |
 
 **Edge cases:**
-- Your resume lists "Gemma 4 E4B" in Skills but "Gemma 3 4B" in the Investly bullet. **One of these is wrong — Open Question O-1.** Don't publish both.
+- **Resolved in resume (3):** the Gemma 3 / Gemma 4 contradiction is gone — Gemma now appears only once, in Skills.
+- **New in resume (3):** dropping Investly left `ChromaDB`, `RAG Pipelines` and `Gemma 4 E4B` in Skills with **no project on the résumé that uses them**. A recruiter who asks "where did you use ChromaDB?" gets no answer from the page or the PDF. Either bring Investly back, or cut those three skills. See O-1.
 - Spoken languages (English, Tamil, German, Japanese) are on the resume but don't belong in a technical skills grid. Recommend folding them into the About paragraph instead.
 - Resist adding anything not on the resume. R-4 applies here too.
 
@@ -240,7 +241,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 **Role:** The human paragraph. Everything above is claims and numbers; this is voice.
 
 **Content (draft — rewrite in your own voice, this is placeholder-quality):**
-> I'm a sophomore studying Computer Science at UT Austin, expected to graduate in Spring 2028. Most of my time goes to UT Registration Plus, where I lead a team of six building the Chrome extension that tens of thousands of students use to plan their schedules.
+> I'm a sophomore studying Computer Science at UT Austin, expected to graduate in Spring 2028. Most of my time goes to UT Registration Plus, where I lead a team of five building the Chrome extension that tens of thousands of students use to plan their schedules.
 >
 > I got into engineering sideways — through a YouTube channel where I taught video editing, which taught me more about shipping on a deadline than any class has. Coursework: Data Structures, Discrete Math, Software Design & Implementation, Embedded Systems, Linear Algebra. I speak English and Tamil natively, and I'm working on German and Japanese.
 
@@ -316,7 +317,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 | # | Question | My recommendation |
 |---|---|---|
-| **O-1** | Gemma **3 4B** or Gemma **4 E4B**? Your resume says both. | Résumé-only now that Investly is off the site — but the PDF is linked from the hero, so a recruiter still sees the contradiction. Fix it. |
+| **O-1** | Résumé (3) still lists ChromaDB, RAG Pipelines and Gemma 4 E4B under Skills, but Investly — the only project that used them — is gone. | Either restore Investly as a fourth project, or cut those three skills. Unbacked skills are the first thing an interviewer probes. |
 | **O-8** | `public/resume.pdf` carries your **phone number**. Publishing it puts (979) 575-3148 on a public URL for scrapers. | Your call. Either accept it, or export a web version of the résumé with the phone removed and ship that as `resume.pdf`. |
 | **O-2** | UT burnt orange, or something not tied to the school? | Burnt orange — instantly legible, and you're a current student |
 | **O-3** | Stats: include the YouTube numbers, or keep all four engineering? | Include them. 20k subscribers is rarer than a good GPA. |
@@ -329,6 +330,6 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 ## What I'd push back on
 
-**The site is doing two jobs.** The engineering story (UTRP, Investly, YOLOv8) and the creator story (20k subs, 32M impressions, an e-commerce side business) are both genuinely strong, but they pull toward different readers. This spec leans engineering-first and lets the creator work appear as *evidence of shipping ability* rather than as a parallel identity. If you'd rather foreground the creator side, §3.1, §3.2, and §3.4 all change — tell me before Phase 1, not after.
+**The site is doing two jobs.** The engineering story (UTRP, Breakout, YOLOv8) and the creator story (20k subs, 32M impressions, an e-commerce side business) are both genuinely strong, but they pull toward different readers. This spec leans engineering-first and lets the creator work appear as *evidence of shipping ability* rather than as a parallel identity. If you'd rather foreground the creator side, §3.1, §3.2, and §3.4 all change — tell me before Phase 1, not after.
 
 **One page is enough right now.** Multi-page portfolios are where student sites go to die half-finished. Deployed and complete beats ambitious and 70% done.
