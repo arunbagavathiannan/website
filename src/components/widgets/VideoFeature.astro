@@ -30,7 +30,7 @@ const {
       items.map(({ id: videoId, description, metrics = [], playLabel, align = 'left' }) => (
         <div class="grid items-center gap-8 md:grid-cols-12 md:gap-12 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
           <div
-            class:list={['video-frame md:col-span-7', align === 'right' ? 'md:order-2 md:col-start-6' : 'md:order-1']}
+            class:list={['video-frame md:col-span-6', align === 'right' ? 'md:order-2 md:col-start-7' : 'md:order-1']}
           >
             <YouTube id={videoId} playlabel={playLabel ?? 'Play video'} posterQuality="high" />
           </div>

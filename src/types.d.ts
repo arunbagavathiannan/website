@@ -568,4 +568,6 @@ export interface Photo extends Widget {
   };
   /** Small line under the photo. */
   caption?: string;
+  /** Fraction of the image height to hide from the bottom, e.g. 0.1 for 10%. */
+  cropBottom?: number;
 }

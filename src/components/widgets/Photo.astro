@@ -14,12 +14,20 @@ import type { Photo as Props } from '~/types';
 const {
   image,
   caption,
+  cropBottom = 0,
 
   id,
   isDark = false,
   classes = {},
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
+
+// Cropping is done with an aspect-ratio frame rather than by editing the file,
+// so the original stays intact. Needs the imported image's dimensions.
+const cropStyle =
+  cropBottom > 0 && typeof image.src !== 'string'
+    ? `aspect-ratio: ${image.src.width} / ${image.src.height * (1 - cropBottom)}`
+    : undefined;
 ---
 
 <WidgetWrapper
@@ -31,9 +39,9 @@ const {
   <figure class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
     {caption && <figcaption class="mb-3 text-right text-sm text-muted">{caption}</figcaption>}
     <div class="photo-shadow">
-      <div class="photo-fade w-full overflow-hidden rounded-2xl">
+      <div class="photo-fade w-full overflow-hidden rounded-2xl" style={cropStyle}>
         <Image
-          class="w-full"
+          class:list={['w-full', cropStyle && 'h-full object-cover object-top']}
           src={image.src}
           alt={image.alt}
           widths={[640, 960, 1280, 1600]}
