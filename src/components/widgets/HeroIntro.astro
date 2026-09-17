@@ -63,7 +63,7 @@ const hasImage = Boolean(image);
         intro && (
           <div
             class:list={[
-              'hero-reveal prose-hero text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed',
+              'hero-reveal prose-hero text-base leading-relaxed text-muted md:text-lg md:leading-relaxed',
               hasImage ? 'max-w-none' : 'max-w-3xl',
             ]}
             style="--reveal-delay: 0.2s"
@@ -75,7 +75,7 @@ const hasImage = Boolean(image);
       {
         resume && (
           <a
-            class="hero-reveal group mt-10 inline-flex items-center gap-1.5 text-base font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-lg"
+            class="hero-reveal group mt-10 inline-flex items-center gap-1.5 text-sm font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-base"
             style="--reveal-delay: 0.34s"
             href={resume.href}
             target={resume.href?.startsWith('http') ? '_blank' : undefined}

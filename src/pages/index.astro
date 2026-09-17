@@ -18,6 +18,7 @@ import Projects from '~/components/widgets/Projects.astro';
 import VideoFeature from '~/components/widgets/VideoFeature.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Footer from '~/components/widgets/Footer.astro';
+import ScrollLines from '~/components/common/ScrollLines.astro';
 
 const metadata = {
   title: 'Arun Bagavathiannan — Software Engineer',
@@ -80,7 +81,7 @@ const metadata = {
   <ExperienceList
     id="experience"
     title="Experience"
-    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl md:text-4xl' } }}
+    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl' } }}
     items={[
       {
         organization: 'Longhorn Developers',
@@ -130,7 +131,7 @@ const metadata = {
   <ExperienceList
     id="education"
     title="Education"
-    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl md:text-4xl' } }}
+    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl' } }}
     items={[
       {
         organization: 'The University of Texas at Austin',
@@ -158,6 +159,7 @@ const metadata = {
   <!-- Photo ************************* -->
 
   <Photo
+    id="countryside"
     image={{ src: indiaImage, alt: 'Rice fields below distant hills in the Indian countryside' }}
     caption="daytime in the Indian countryside"
   />
@@ -168,7 +170,7 @@ const metadata = {
     id="projects"
     title="Projects"
     columns={2}
-    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl md:text-4xl' } }}
+    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl' } }}
     items={[
       {
         title: 'Breakout',
@@ -180,7 +182,7 @@ const metadata = {
         title: 'Immigration Roadmap',
         description:
           '- Won 1st Place at the Data Portability Hackathon held by the UT School of Law & the AI Collective.<br />- Provides tailored suggestions for aspiring immigrants to streamline paperwork and potentially saving years of visa application wait time.',
-        tags: ['Javascript', 'React', 'Claude API', 'RAG'],
+        tags: ['JavaScript', 'React', 'Claude API', 'RAG'],
         href: 'https://immigration-roadmap.com/',
         linkText: 'View Website',
       },
@@ -192,7 +194,7 @@ const metadata = {
   <VideoFeature
     id="video"
     title="On YouTube"
-    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl md:text-4xl' } }}
+    classes={{ headline: { container: 'max-w-none text-left md:mx-0', title: 'text-3xl' } }}
     items={[
       {
         id: 'Z25p1DXcPxo',
@@ -217,7 +219,7 @@ const metadata = {
   <CallToAction
     id="contact"
     title="Let's connect!"
-    subtitle="Open to software, forward-deployed and product engineering internships for Summer 2027."
+    subtitle="Open to forward-deployed software and product engineering internships for Summer 2027."
     actions={[
       {
         variant: 'primary',
@@ -229,9 +231,21 @@ const metadata = {
     ]}
   />
 
+  <!-- Connector lines ************** -->
+
+  <ScrollLines
+    links={[
+      { from: '#about .hero-portrait', to: '#experience h2', end: 'middle', closed: true },
+      { from: '#countryside .photo-fade', to: '#projects h2', end: 'middle' },
+      { from: '#video .gap-14 > :nth-child(1) .video-frame', to: '#video .gap-14 > :nth-child(2) .video-frame', end: 'top' },
+      { from: '#video .gap-14 > :nth-child(2) .video-frame', to: '#contact .max-w-3xl', end: 'box', next: '#yellowstone .photo-fade' },
+    ]}
+  />
+
   <!-- Photo ************************* -->
 
   <Photo
+    id="yellowstone"
     image={{ src: yellowstoneImage, alt: 'A river at dusk in Yellowstone National Park' }}
     caption="sunset at Yellowstone Park"
   />

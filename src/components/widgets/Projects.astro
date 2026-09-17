@@ -25,6 +25,19 @@ const {
 } = Astro.props;
 
 const columnsClass = getColumnsClass(columns, '');
+
+// Each skill keeps one tint everywhere it appears, so a tag is recognisable at a
+// glance. Keys are lowercase; unlisted tags fall back to the neutral pill.
+const TAG_COLORS: Record<string, string> = {
+  javascript: 'bg-yellow-400/15 text-yellow-700 dark:text-yellow-300',
+  typescript: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
+  react: 'bg-cyan-400/15 text-cyan-700 dark:text-cyan-300',
+  'claude api': 'bg-rose-400/15 text-rose-700 dark:text-rose-300',
+  rag: 'bg-violet-400/15 text-violet-700 dark:text-violet-300',
+  'chrome mv3': 'bg-emerald-400/15 text-emerald-700 dark:text-emerald-300',
+  'tf-idf': 'bg-pink-400/15 text-pink-700 dark:text-pink-300',
+};
+const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 text-muted dark:bg-white/10';
 ---
 
 <WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
@@ -65,13 +78,13 @@ const columnsClass = getColumnsClass(columns, '');
                 {tags && tags.length > 0 && (
                   <ul class="mb-3 flex flex-wrap gap-1.5 list-none">
                     {tags.map((tag) => (
-                      <li class="rounded-full bg-black/5 px-2.5 py-0.5 text-xs font-medium text-muted dark:bg-white/10">
+                      <li class:list={['rounded-full px-2.5 py-0.5 text-xs font-medium', tagClass(tag)]}>
                         {tag}
                       </li>
                     ))}
                   </ul>
                 )}
-                {itemTitle && <h3 class="text-xl font-bold text-heading">{itemTitle}</h3>}
+                {itemTitle && <h3 class="text-lg font-bold text-heading">{itemTitle}</h3>}
                 {description && <p class="mt-2 text-muted text-pretty" set:html={description} />}
                 {result && (
                   <p class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">

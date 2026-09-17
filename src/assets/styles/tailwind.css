@@ -24,15 +24,17 @@
   --font-serif: var(--aw-font-serif, ui-serif), ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   --font-heading: var(--aw-font-heading, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
 
-  --animate-fade: fadeInUp 0.5s both;
+  --animate-fade: fadeInUp 0.7s ease-out both;
 
   @keyframes fadeInUp {
     0% {
       opacity: 0;
+      filter: blur(8px);
       transform: translateY(0.75rem);
     }
     100% {
       opacity: 1;
+      filter: none;
       transform: translateY(0);
     }
   }

@@ -41,7 +41,7 @@ const {
                 {metrics.map((metric) => (
                   <div>
                     <dt class="sr-only">{metric.label}</dt>
-                    <dd class="text-3xl font-extrabold leading-none tracking-tight text-primary">{metric.value}</dd>
+                    <dd class="text-2xl font-extrabold leading-none tracking-tight text-primary">{metric.value}</dd>
                     <dd class="mt-1 text-sm uppercase tracking-[0.14em] text-muted">{metric.label}</dd>
                   </div>
                 ))}
@@ -49,7 +49,7 @@ const {
             )}
 
             {description && (
-              <p class="video-copy text-lg leading-relaxed text-muted text-pretty" set:html={description} />
+              <p class="video-copy text-base leading-relaxed text-muted text-pretty" set:html={description} />
             )}
           </div>
         </div>

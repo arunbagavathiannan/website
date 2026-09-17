@@ -1,0 +1,305 @@
+---
+// Burnt-orange connector lines that draw themselves as you scroll. Each link
+// brackets the underside of a `from` element and runs a line down to its `to`
+// element: ending beside a heading (`middle`), on an element's top edge
+// (`top`), or wrapping it in a box (`box`). A `closed` bracket is fully drawn
+// on landing (blurring in with the hero) and its connector waits for the first
+// scroll; a box can trail a fading line down to a `next` element.
+//
+// Geometry is measured from the live layout rather than hard-coded, so the
+// lines follow the content at any width. Measurement uses offsetTop/offsetLeft,
+// which ignore transforms, so a reveal animation mid-flight can't skew a line.
+// Hidden below the md breakpoint, where the two-column layouts stack.
+
+export interface Link {
+  from: string;
+  to: string;
+  end: 'middle' | 'top' | 'box';
+  closed?: boolean;
+  next?: string;
+}
+
+export interface Props {
+  links: Link[];
+}
+
+const { links } = Astro.props;
+---
+
+<aw-scroll-lines class="pointer-events-none absolute inset-0 hidden overflow-hidden md:block" aria-hidden="true" data-links={JSON.stringify(links)}>
+  <svg class="h-full w-full"><g data-reveal></g></svg>
+</aw-scroll-lines>
+
+<style is:global>
+  /* Matches the hero's reveal (timing and the figure's 0.26s delay) so a closed
+     bracket arrives with the photo it wraps. It lives on a persistent group, so
+     rebuilding the paths on resize doesn't replay it. */
+  @media (prefers-reduced-motion: no-preference) {
+    aw-scroll-lines [data-reveal] {
+      animation: lineReveal 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.26s both;
+    }
+    @keyframes lineReveal {
+      from {
+        opacity: 0;
+        filter: blur(12px);
+        transform: translate3d(-1.5rem, 0, 0);
+      }
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate3d(0, 0, 0);
+      }
+    }
+  }
+</style>
+
+<script>
+  const COLOR = '#BF5700';
+  const GAP = 18; // space between a bracket/box and the element it wraps
+  const RADIUS = 14; // corner rounding
+  const ARM_START = 0.6; // bracket arms begin this far down the element
+  const FADE = 90; // length of the fade at the loose ends
+  const PEN = 0.9; // lines are drawn up to this fraction of the viewport height
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  type Point = [number, number];
+  type Box = { x: number; y: number; w: number; h: number };
+  type Stroke = { el: SVGPathElement; length: number; windows: [number, number, number][] };
+
+  // Page position of an element, ignoring transforms.
+  function measure(el: HTMLElement): Box {
+    let x = 0;
+    let y = 0;
+    for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) {
+      x += node.offsetLeft;
+      y += node.offsetTop;
+    }
+    return { x, y, w: el.offsetWidth, h: el.offsetHeight };
+  }
+
+  // Polyline -> path data with rounded corners.
+  function toPath(points: Point[]): string {
+    let d = `M${points[0][0]},${points[0][1]}`;
+    for (let i = 1; i < points.length - 1; i++) {
+      const [px, py] = points[i - 1];
+      const [cx, cy] = points[i];
+      const [nx, ny] = points[i + 1];
+      const r = Math.min(RADIUS, Math.hypot(cx - px, cy - py) / 2, Math.hypot(nx - cx, ny - cy) / 2);
+      const ax = cx - Math.sign(cx - px) * r;
+      const ay = cy - Math.sign(cy - py) * r;
+      const bx = cx + Math.sign(nx - cx) * r;
+      const by = cy + Math.sign(ny - cy) * r;
+      d += ` L${ax},${ay} Q${cx},${cy} ${bx},${by}`;
+    }
+    const [lx, ly] = points[points.length - 1];
+    return d + ` L${lx},${ly}`;
+  }
+
+  class AwScrollLines extends HTMLElement {
+    private svg!: SVGSVGElement;
+    private strokes: Stroke[] = [];
+    private frame = 0;
+    private resizeObserver: ResizeObserver | null = null;
+    private desktop = window.matchMedia('(min-width: 768px)');
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private onScroll = () => this.schedule(false);
+    private onLayout = () => this.schedule(true);
+
+    connectedCallback() {
+      this.svg = this.querySelector('svg')!;
+      this.resizeObserver = new ResizeObserver(this.onLayout);
+      this.resizeObserver.observe(this.parentElement ?? document.body);
+      window.addEventListener('scroll', this.onScroll, { passive: true });
+      this.desktop.addEventListener('change', this.onLayout);
+      document.fonts?.ready.then(this.onLayout);
+      this.schedule(true);
+    }
+
+    disconnectedCallback() {
+      this.resizeObserver?.disconnect();
+      window.removeEventListener('scroll', this.onScroll);
+      this.desktop.removeEventListener('change', this.onLayout);
+      cancelAnimationFrame(this.frame);
+    }
+
+    private rebuildPending = false;
+    private schedule(rebuild: boolean) {
+      this.rebuildPending ||= rebuild;
+      if (this.frame) return;
+      this.frame = requestAnimationFrame(() => {
+        this.frame = 0;
+        if (this.rebuildPending) this.build();
+        this.rebuildPending = false;
+        this.draw();
+      });
+    }
+
+    private build() {
+      // Keep the reveal group itself so its animation isn't restarted.
+      const reveal = this.svg.querySelector('g[data-reveal]')!;
+      reveal.replaceChildren();
+      Array.from(this.svg.children).forEach((child) => child !== reveal && child.remove());
+      this.strokes = [];
+      if (!this.desktop.matches) return;
+
+      const origin = measure(this.offsetParent as HTMLElement);
+      const links = JSON.parse(this.dataset.links ?? '[]');
+      const defs = document.createElementNS(SVG_NS, 'defs');
+      this.svg.append(defs);
+
+      links.forEach((link: { from: string; to: string; end: string; closed?: boolean; next?: string }, i: number) => {
+        const fromEl = document.querySelector<HTMLElement>(link.from);
+        const toEl = document.querySelector<HTMLElement>(link.to);
+        if (!fromEl || !toEl) return;
+        const from = measure(fromEl);
+        const to = measure(toEl);
+        // Shift into this overlay's coordinate space.
+        from.x -= origin.x;
+        from.y -= origin.y;
+        to.x -= origin.x;
+        to.y -= origin.y;
+
+        // Bracket: two arms start partway down each side and meet under the middle.
+        const armTop = from.y + from.h * ARM_START;
+        const bottom = from.y + from.h + GAP;
+        const jx = from.x + from.w / 2;
+        const armStrokes = this.strokes.length;
+        let armEnd = this.addPair(
+          defs,
+          `${i}a`,
+          [[from.x - GAP, armTop], [from.x - GAP, bottom], [jx, bottom]],
+          [[from.x + from.w + GAP, armTop], [from.x + from.w + GAP, bottom], [jx, bottom]],
+          armTop,
+          'in'
+        );
+        if (link.closed) {
+          // Already complete on landing, so it reveals with the hero instead of drawing.
+          this.strokes.slice(armStrokes).forEach((s) => {
+            s.windows.forEach((w) => ((w[0] = -2), (w[1] = -1)));
+            reveal.append(s.el);
+          });
+          // The connector starts just past where the pen sits before any scroll.
+          armEnd = Math.max(bottom, window.innerHeight * PEN - origin.y + 1);
+        }
+
+        // Connector: down to the halfway point, across, then down to the target.
+        const ex = to.x + to.w / 2;
+        const ey = link.end === 'middle' ? to.y + to.h / 2 : to.y - GAP;
+        const midY = (bottom + ey) / 2;
+        const route: Point[] =
+          Math.abs(ex - jx) < 2 ? [[jx, bottom], [ex, ey]] : [[jx, bottom], [jx, midY], [ex, midY], [ex, ey]];
+        const fades = link.end !== 'box';
+        const connectorEnd = this.addStroke(defs, `${i}c`, route, armEnd, fades ? 'out' : null);
+
+        if (link.end === 'box') {
+          // Box: two halves leave the top centre and close at the bottom centre.
+          const left = to.x - GAP;
+          const right = to.x + to.w + GAP;
+          const boxBottom = to.y + to.h + GAP;
+          const boxEnd = this.addPair(
+            defs,
+            `${i}b`,
+            [[ex, ey], [left, ey], [left, boxBottom], [ex, boxBottom]],
+            [[ex, ey], [right, ey], [right, boxBottom], [ex, boxBottom]],
+            connectorEnd,
+            null
+          );
+
+          // Tail: a straight line from the bottom of the box, fading out into `next`.
+          const nextEl = link.next ? document.querySelector<HTMLElement>(link.next) : null;
+          if (nextEl) {
+            const next = measure(nextEl);
+            this.addStroke(defs, `${i}t`, [[ex, boxBottom], [ex, next.y - origin.y]], boxEnd, 'out');
+          }
+        }
+      });
+    }
+
+    // Two mirrored strokes drawn in step; returns where their timeline ends.
+    private addPair(defs: SVGDefsElement, id: string, a: Point[], b: Point[], start: number, fade: 'in' | null) {
+      this.addStroke(defs, `${id}1`, b, start, fade);
+      return this.addStroke(defs, `${id}0`, a, start, fade);
+    }
+
+    // Adds one stroke and returns the scroll position at which it finishes.
+    // Each segment gets a scroll window: vertical runs track their own height,
+    // horizontal runs take a short fixed distance, and every window starts where
+    // the previous one ended so the tip never jumps.
+    private addStroke(defs: SVGDefsElement, id: string, points: Point[], start: number, fade: 'in' | 'out' | null) {
+      const path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('d', toPath(points));
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-width', '2');
+      path.setAttribute('stroke-linecap', 'round');
+
+      if (fade) {
+        const ys = points.map((p) => p[1]);
+        const edge = fade === 'in' ? ys[0] : ys[ys.length - 1];
+        const lastRun = Math.abs(ys[ys.length - 1] - ys[ys.length - 2]);
+        const len = Math.min(FADE, fade === 'out' ? lastRun * 0.9 : FADE);
+        const grad = document.createElementNS(SVG_NS, 'linearGradient');
+        grad.id = `aw-line-${id}`;
+        grad.setAttribute('gradientUnits', 'userSpaceOnUse');
+        grad.setAttribute('x1', '0');
+        grad.setAttribute('x2', '0');
+        grad.setAttribute('y1', String(fade === 'in' ? edge : edge - len));
+        grad.setAttribute('y2', String(fade === 'in' ? edge + len : edge));
+        const opacities = fade === 'in' ? ['0', '1'] : ['1', '0'];
+        opacities.forEach((opacity, n) => {
+          const stop = document.createElementNS(SVG_NS, 'stop');
+          stop.setAttribute('offset', String(n));
+          stop.setAttribute('stop-color', COLOR);
+          stop.setAttribute('stop-opacity', opacity);
+          grad.append(stop);
+        });
+        defs.append(grad);
+        path.setAttribute('stroke', `url(#${grad.id})`);
+      } else {
+        path.setAttribute('stroke', COLOR);
+      }
+      this.svg.append(path);
+
+      const windows: [number, number, number][] = [];
+      let t = start;
+      let total = 0;
+      for (let i = 1; i < points.length; i++) {
+        const [px, py] = points[i - 1];
+        const [cx, cy] = points[i];
+        const segment = Math.hypot(cx - px, cy - py);
+        const end = py === cy ? t + Math.min(Math.max(segment * 0.25, 30), 100) : Math.max(cy, t + 40);
+        windows.push([t, end, segment]);
+        total += segment;
+        t = end;
+      }
+
+      // Path length is slightly shorter than the polyline (rounded corners), so
+      // scale the windows onto the real length.
+      const length = path.getTotalLength();
+      windows.forEach((w) => (w[2] *= length / total));
+      path.style.strokeDasharray = `${length}`;
+      path.style.strokeDashoffset = `${length}`;
+      this.strokes.push({ el: path, length, windows });
+      return t;
+    }
+
+    private draw() {
+      if (!this.strokes.length) return;
+      const pen = this.reducedMotion.matches
+        ? Infinity
+        : window.scrollY + window.innerHeight * PEN - measure(this.offsetParent as HTMLElement).y;
+      for (const { el, length, windows } of this.strokes) {
+        let drawn = 0;
+        for (const [from, to, segment] of windows) {
+          const progress = Math.min(Math.max((pen - from) / (to - from), 0), 1);
+          drawn += progress * segment;
+          if (progress < 1) break;
+        }
+        el.style.strokeDashoffset = `${length - drawn}`;
+      }
+    }
+  }
+
+  if (!customElements.get('aw-scroll-lines')) {
+    customElements.define('aw-scroll-lines', AwScrollLines);
+  }
+</script>
