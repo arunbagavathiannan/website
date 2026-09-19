@@ -1,6 +1,6 @@
 site:
   name: Arun Bagavathiannan
-  site: 'https://astrowind-one-opal.vercel.app'
+  site: 'https://arunbagavathiannan.com'
   base: '/'
   trailingSlash: false
 
@@ -18,9 +18,9 @@ metadata:
   openGraph:
     site_name: Arun Bagavathiannan
     images:
-      - url: '~/assets/images/default.png'
+      - url: '~/assets/images/og-home.png'
         width: 1200
-        height: 628
+        height: 630
     type: website
   twitter:
     handle: null

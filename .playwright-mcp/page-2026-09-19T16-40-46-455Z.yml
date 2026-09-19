@@ -1,0 +1,191 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e3]:
+    - generic [ref=f1e5]:
+      - link "Arun Bagavathiannan" [ref=f1e7] [cursor=pointer]:
+        - /url: /
+      - navigation "Main navigation" [ref=f1e9]:
+        - list [ref=f1e10]:
+          - listitem [ref=f1e11]:
+            - link "Experience" [ref=f1e12] [cursor=pointer]:
+              - /url: "#experience"
+          - listitem [ref=f1e13]:
+            - link "Education" [ref=f1e14] [cursor=pointer]:
+              - /url: "#education"
+          - listitem [ref=f1e15]:
+            - link "Projects" [ref=f1e16] [cursor=pointer]:
+              - /url: "#projects"
+          - listitem [ref=f1e17]:
+            - link "Contact" [ref=f1e18] [cursor=pointer]:
+              - /url: "#contact"
+      - button "Toggle between Dark and Light mode" [ref=f1e23]
+  - main [ref=f1e27]:
+    - generic [ref=f1e30]:
+      - generic [ref=f1e31]:
+        - heading "Arun Bagavathiannan" [level=1] [ref=f1e32]
+        - paragraph [ref=f1e34]:
+          - text: I'm a Computer Science student at UT Austin. I lead a team of five on
+          - link "UT Registration Plus" [ref=f1e35] [cursor=pointer]:
+            - /url: https://github.com/Longhorn-Developers/UT-Registration-Plus
+          - text: ", the Chrome extension 60,000+ students use to build their schedules. I have presented machine learning research conducted at Texas A&M in Vancouver and Spain, and I've spent five years growing a"
+          - link "YouTube channel" [ref=f1e36] [cursor=pointer]:
+            - /url: https://www.youtube.com/@orphicakm
+          - text: past 20,000 subscribers.
+        - link "View Résumé" [ref=f1e37] [cursor=pointer]:
+          - /url: /resume.pdf
+        - list [ref=f1e40]:
+          - listitem [ref=f1e41]:
+            - link "LinkedIn" [ref=f1e42] [cursor=pointer]:
+              - /url: https://linkedin.com/in/arun-bagavathiannan
+          - listitem [ref=f1e45]:
+            - link "GitHub" [ref=f1e46] [cursor=pointer]:
+              - /url: https://github.com/arunbagavathiannan
+          - listitem [ref=f1e49]:
+            - link "Email" [ref=f1e50] [cursor=pointer]:
+              - /url: mailto:arun.bagavathiannan@gmail.com
+          - listitem [ref=f1e53]:
+            - link "YouTube" [ref=f1e54] [cursor=pointer]:
+              - /url: https://www.youtube.com/@orphicakm
+      - figure "sunrise on Mt. Fuji" [ref=f1e57]:
+        - img "Arun pointing toward the horizon above the clouds at sunrise" [ref=f1e61]
+    - generic [ref=f1e63]:
+      - heading "Experience" [level=2] [ref=f1e65]
+      - list [ref=f1e66]:
+        - listitem [ref=f1e67]:
+          - generic [ref=f1e70]:
+            - generic [ref=f1e71]:
+              - heading [level=3] [ref=f1e72]:
+                - link "Longhorn Developers" [ref=f1e73] [cursor=pointer]:
+                  - /url: https://github.com/Longhorn-Developers
+              - paragraph [ref=f1e76]: Aug 2026 — Present
+            - generic [ref=f1e77]:
+              - paragraph [ref=f1e78]: Technical Lead, UT Registration Plus
+              - paragraph [ref=f1e79]: Austin, TX
+            - paragraph [ref=f1e80]: "- Promoted from Software Engineer to lead a team of 5 developers.- Ran end-to-end hiring for the developer fellowship — screened 80+ applications, interviewed finalists, selected 4 engineers at roughly a 5% acceptance rate."
+        - listitem [ref=f1e81]:
+          - generic [ref=f1e84]:
+            - generic [ref=f1e85]:
+              - heading [level=3] [ref=f1e86]:
+                - link "Longhorn Developers" [ref=f1e87] [cursor=pointer]:
+                  - /url: https://github.com/Longhorn-Developers
+              - paragraph [ref=f1e90]: Jan 2026 — Aug 2026
+            - generic [ref=f1e91]:
+              - paragraph [ref=f1e92]: Software Engineer, UT Registration Plus
+              - paragraph [ref=f1e93]: Austin, TX
+            - paragraph [ref=f1e94]: "- Built the Course Status Checker for real-time seat tracking inside the calendar UI, cited in UT CS News coverage of the extension.- Designed a throttled refresh system in React and TypeScript to avoid API rate-limiting under university infrastructure constraints, and a reactive store synchronising state between background service workers and the frontend."
+        - listitem [ref=f1e95]:
+          - generic [ref=f1e98]:
+            - generic [ref=f1e99]:
+              - heading [level=3] [ref=f1e100]:
+                - link "YouTube" [ref=f1e101] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@orphicakm
+              - paragraph [ref=f1e104]: Jul 2021 — Present
+            - paragraph [ref=f1e106]: Content Creator
+            - paragraph [ref=f1e107]:
+              - text: "- Grew a video-editing channel past 20,000 subscribers, 32M+ impressions and 7M+ views.- Launched and ran"
+              - link "buyorphic.com" [ref=f1e108] [cursor=pointer]:
+                - /url: https://www.buyorphic.com/
+              - text: ", selling editing presets for $500+ in its first year."
+        - listitem [ref=f1e109]:
+          - generic [ref=f1e112]:
+            - generic [ref=f1e113]:
+              - heading "Texas A&M University" [level=3] [ref=f1e114]
+              - paragraph [ref=f1e115]: Jan 2025 — Mar 2025
+            - generic [ref=f1e116]:
+              - paragraph [ref=f1e117]: ML Research Intern
+              - paragraph [ref=f1e118]: College Station, TX
+            - paragraph [ref=f1e119]: "- Took a raw 100-image dataset to a production YOLOv8 detection model at 80%+ precision and recall. Automated augmentation workflows in Python and OpenCV scaled training data 6×.- Presented results at 3 conferences, including the Weed Science Society of America in Vancouver and the European Weed Research Society in Spain."
+    - generic [ref=f1e121]:
+      - heading "Education" [level=2] [ref=f1e123]
+      - list [ref=f1e124]:
+        - listitem [ref=f1e125]:
+          - generic [ref=f1e128]:
+            - generic [ref=f1e129]:
+              - heading [level=3] [ref=f1e130]:
+                - link "The University of Texas at Austin" [ref=f1e131] [cursor=pointer]:
+                  - /url: https://www.utexas.edu/
+              - paragraph [ref=f1e134]: Expected Fall 2028
+            - generic [ref=f1e135]:
+              - paragraph [ref=f1e136]: B.S. Computer Science
+              - paragraph [ref=f1e137]: Austin, TX
+            - paragraph [ref=f1e138]: "- GPA: 3.73.- Transferred into Computer Science from Electrical and Computer Engineering.- Relevant coursework: CS 311 (Discrete Math), CS 314 (Data Structures), ECE 312H (Software Design & Implementation I), ECE 319H (Embedded Systems), M 340L (Matrices and Matrix Operations)."
+        - listitem [ref=f1e139]:
+          - generic [ref=f1e142]:
+            - generic [ref=f1e143]:
+              - heading [level=3] [ref=f1e144]:
+                - link "J.F. Oberlin University" [ref=f1e145] [cursor=pointer]:
+                  - /url: https://utdirect.utexas.edu/apps/abroad/student/pgm_list/detail/nlogon/1831/
+              - paragraph [ref=f1e148]: Summer 2026
+            - generic [ref=f1e149]:
+              - paragraph [ref=f1e150]: Logic and Probability — UT Study Abroad
+              - paragraph [ref=f1e151]: Shinjuku, Tokyo, Japan
+            - paragraph [ref=f1e152]: "- Completed 2 months of global immersion in Japan with frequent industry visits and collaboration with Japanese students.- Coursework includes ECE 316 (Digital Logic Design) & ECE 351K (Probability & Random Processes)."
+    - figure "daytime in the Indian countryside" [ref=f1e155]:
+      - img "Rice fields below distant hills in the Indian countryside" [ref=f1e159]
+    - generic [ref=f1e161]:
+      - heading "Projects" [level=2] [ref=f1e163]
+      - list [ref=f1e164]:
+        - listitem [ref=f1e165]:
+          - generic [ref=f1e167]:
+            - list [ref=f1e168]:
+              - listitem [ref=f1e169]: JavaScript
+              - listitem [ref=f1e170]: Chrome MV3
+              - listitem [ref=f1e171]: TF-IDF
+            - heading "Breakout" [level=3] [ref=f1e172]
+            - paragraph [ref=f1e173]:
+              - text: – A Chrome extension scoring YouTube videos against rolling channel medians, so a video is judged against its own channel’s baseline rather than raw view count.– Parses
+              - code [ref=f1e174]: ytInitialData
+              - text: instead of the quota-limited API. A TF-IDF niche filter builds weighted vocabulary from seed channels, surfacing adjacent outliers that keyword search misses.
+        - listitem [ref=f1e175]:
+          - link [ref=f1e176] [cursor=pointer]:
+            - /url: https://immigration-roadmap.com/
+            - generic [ref=f1e177]:
+              - list [ref=f1e178]:
+                - listitem [ref=f1e179]: JavaScript
+                - listitem [ref=f1e180]: React
+                - listitem [ref=f1e181]: Claude API
+                - listitem [ref=f1e182]: RAG
+              - heading "Immigration Roadmap" [level=3] [ref=f1e183]
+              - paragraph [ref=f1e184]: "- Won 1st Place at the Data Portability Hackathon held by the UT School of Law & the AI Collective.- Provides tailored suggestions for aspiring immigrants to streamline paperwork and potentially saving years of visa application wait time."
+              - generic [ref=f1e185]: View Website
+    - generic [ref=f1e189]:
+      - heading "On YouTube" [level=2] [ref=f1e191]
+      - generic [ref=f1e192]:
+        - generic [ref=f1e193]:
+          - 'button "Play: WIS Editing COMPLETE Tutorial" [ref=f1e196] [cursor=pointer]'
+          - generic [ref=f1e198]:
+            - generic [ref=f1e200]:
+              - term [ref=f1e201]: views
+              - definition [ref=f1e202]: 76K+
+              - definition [ref=f1e203]: views
+            - paragraph [ref=f1e204]: Engineered a step-by-step tutorial to educate tens of thousands of fellow editors to improve their video editing pipeline.
+        - generic [ref=f1e205]:
+          - 'button "Play: Explaining How Gojo Lost to Sukuna With Math" [ref=f1e208] [cursor=pointer]'
+          - paragraph [ref=f1e211]:
+            - text: Created python scripts for math animations using
+            - link "Manim" [ref=f1e212] [cursor=pointer]:
+              - /url: https://www.manim.community/
+            - text: ", connecting complex fictional concepts to their mathematical reality."
+    - generic [ref=f1e215]:
+      - generic [ref=f1e216]:
+        - heading "Let's connect!" [level=2] [ref=f1e217]
+        - paragraph [ref=f1e218]: Open to forward-deployed software and product engineering internships for Summer 2027.
+      - generic [ref=f1e219]:
+        - link "Email me" [ref=f1e221] [cursor=pointer]:
+          - /url: mailto:arun.bagavathiannan@gmail.com
+        - link "GitHub" [ref=f1e225] [cursor=pointer]:
+          - /url: https://github.com/arunbagavathiannan
+    - figure "sunset at Yellowstone Park" [ref=f1e228]:
+      - img "A river at dusk in Yellowstone National Park" [ref=f1e232]
+  - contentinfo [ref=f1e233]:
+    - generic [ref=f1e235]:
+      - list [ref=f1e236]:
+        - listitem [ref=f1e237]:
+          - link "LinkedIn" [ref=f1e238] [cursor=pointer]:
+            - /url: https://linkedin.com/in/arun-bagavathiannan
+        - listitem [ref=f1e241]:
+          - link "GitHub" [ref=f1e242] [cursor=pointer]:
+            - /url: https://github.com/arunbagavathiannan
+        - listitem [ref=f1e245]:
+          - link "Email" [ref=f1e246] [cursor=pointer]:
+            - /url: mailto:arun.bagavathiannan@gmail.com
+      - generic [ref=f1e249]: All photos were captured on Arun's phone.
