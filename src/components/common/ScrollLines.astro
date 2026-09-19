@@ -4,7 +4,10 @@
 // element: ending beside a heading (`middle`), on an element's top edge
 // (`top`), or wrapping it in a box (`box`). A `closed` bracket is fully drawn
 // on landing (blurring in with the hero) and its connector waits for the first
-// scroll; a box can trail a fading line down to a `next` element.
+// scroll; a box can trail a fading line down to a `next` element. A `bridge`
+// skips the bracket entirely: one plain line down the whitespace between two
+// sections, dissolving at both ends so it fills the seam without attaching
+// itself to either neighbour.
 //
 // Geometry is measured from the live layout rather than hard-coded, so the
 // lines follow the content at any width. Measurement uses offsetTop/offsetLeft,
@@ -14,7 +17,7 @@
 export interface Link {
   from: string;
   to: string;
-  end: 'middle' | 'top' | 'box';
+  end: 'middle' | 'top' | 'box' | 'bridge';
   closed?: boolean;
   next?: string;
 }
@@ -159,6 +162,17 @@ const { links } = Astro.props;
         to.x -= origin.x;
         to.y -= origin.y;
 
+        // A bridge is only the gap: a line down the middle of the whitespace,
+        // faded at both ends, touching neither section. Skipped when the two
+        // have closed up, so a collapsed gap gets no stub.
+        if (link.end === 'bridge') {
+          const x = (from.x + from.w / 2 + to.x + to.w / 2) / 2;
+          const top = from.y + from.h;
+          const bottom = to.y;
+          if (bottom - top > GAP) this.addStroke(defs, `${i}g`, [[x, top], [x, bottom]], top, 'both');
+          return;
+        }
+
         // Bracket: two arms start partway down each side and meet under the middle.
         const armTop = from.y + from.h * ARM_START;
         const bottom = from.y + from.h + GAP;
@@ -225,7 +239,13 @@ const { links } = Astro.props;
     // Each segment gets a scroll window: vertical runs track their own height,
     // horizontal runs take a short fixed distance, and every window starts where
     // the previous one ended so the tip never jumps.
-    private addStroke(defs: SVGDefsElement, id: string, points: Point[], start: number, fade: 'in' | 'out' | null) {
+    private addStroke(
+      defs: SVGDefsElement,
+      id: string,
+      points: Point[],
+      start: number,
+      fade: 'in' | 'out' | 'both' | null
+    ) {
       const path = document.createElementNS(SVG_NS, 'path');
       path.setAttribute('d', toPath(points));
       path.setAttribute('fill', 'none');
@@ -233,21 +253,38 @@ const { links } = Astro.props;
       path.setAttribute('stroke-linecap', 'round');
 
       if (fade) {
+        // Each mode picks the vertical span the gradient covers and the stops
+        // laid along it, as [offset, opacity].
         const ys = points.map((p) => p[1]);
-        const edge = fade === 'in' ? ys[0] : ys[ys.length - 1];
-        const lastRun = Math.abs(ys[ys.length - 1] - ys[ys.length - 2]);
-        const len = Math.min(FADE, fade === 'out' ? lastRun * 0.9 : FADE);
+        const top = ys[0];
+        const bottom = ys[ys.length - 1];
+        let span: [number, number];
+        let stops: [number, string][];
+        if (fade === 'both') {
+          // Two fades on one run, so they are a fraction of it rather than a
+          // fixed length: across a short gap they shrink instead of meeting in
+          // the middle and rubbing the line out.
+          const t = Math.min(FADE / Math.abs(bottom - top), 0.4);
+          span = [top, bottom];
+          stops = [[0, '0'], [t, '1'], [1 - t, '1'], [1, '0']];
+        } else if (fade === 'in') {
+          span = [top, top + FADE];
+          stops = [[0, '0'], [1, '1']];
+        } else {
+          // Never longer than the final run, or the fade would climb the corner.
+          span = [bottom - Math.min(FADE, Math.abs(bottom - ys[ys.length - 2]) * 0.9), bottom];
+          stops = [[0, '1'], [1, '0']];
+        }
         const grad = document.createElementNS(SVG_NS, 'linearGradient');
         grad.id = `aw-line-${id}`;
         grad.setAttribute('gradientUnits', 'userSpaceOnUse');
         grad.setAttribute('x1', '0');
         grad.setAttribute('x2', '0');
-        grad.setAttribute('y1', String(fade === 'in' ? edge : edge - len));
-        grad.setAttribute('y2', String(fade === 'in' ? edge + len : edge));
-        const opacities = fade === 'in' ? ['0', '1'] : ['1', '0'];
-        opacities.forEach((opacity, n) => {
+        grad.setAttribute('y1', String(span[0]));
+        grad.setAttribute('y2', String(span[1]));
+        stops.forEach(([offset, opacity]) => {
           const stop = document.createElementNS(SVG_NS, 'stop');
-          stop.setAttribute('offset', String(n));
+          stop.setAttribute('offset', String(offset));
           stop.setAttribute('stop-color', COLOR);
           stop.setAttribute('stop-opacity', opacity);
           grad.append(stop);
