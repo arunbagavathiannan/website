@@ -25,10 +25,17 @@ export interface Props {
 
 const { metadata = {} } = Astro.props;
 const { language, textDirection } = I18N;
+
+// Root type scale, set as the font size on <html> below. Tailwind expresses
+// font sizes, padding, margins, gaps and container widths in rem, so that one
+// value is a single dial that shrinks the type and the space around it by the
+// same factor: the page gets shorter without any element changing proportion.
+// 14px is 0.875x the 16px browser default, and the 2xl step keeps that same
+// ratio against its old 20px. Turn both numbers up or down together to retune.
 ---
 
 <!doctype html>
-<html lang={language} dir={textDirection} class="2xl:text-[20px]">
+<html lang={language} dir={textDirection} class="text-[14px] 2xl:text-[17.5px]">
   <head>
     <CommonMeta />
     <Favicons />

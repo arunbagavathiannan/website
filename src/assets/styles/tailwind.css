@@ -90,10 +90,10 @@
 
 #header.expanded nav {
   position: fixed;
-  top: 70px;
+  top: 4.375rem;
   left: 0;
   right: 0;
-  bottom: 70px !important;
+  bottom: 4.375rem !important;
   padding: 0 5px;
 }
 

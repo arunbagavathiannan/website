@@ -12,6 +12,15 @@ import type { HeroIntro as Props } from '~/types';
 // Unlike the other widgets this one reveals on first paint rather than on
 // scroll: it is already above the fold, so an intersection-driven fade would
 // either fire instantly or, worse, never.
+//
+// It also reserves the whole first screen, content centred in it, so whatever
+// follows starts below the fold and the landing reads as one thing rather than
+// running into the next section. The header is in normal flow above this, so
+// the reservation is the screen minus the header's own height (the same 4.5rem
+// the anchor offsets in WidgetWrapper use). svh rather than vh is the height
+// with mobile browser chrome showing, which is what is actually visible on
+// load. Being in viewport units, the reservation holds at whatever root type
+// scale Layout.astro is set to.
 
 const {
   name = await Astro.slots.render('name'),
@@ -33,7 +42,7 @@ const hasImage = Boolean(image);
 <WidgetWrapper
   id={id}
   isDark={isDark}
-  containerClass={`hero-intro ${hasImage ? 'max-w-6xl' : 'max-w-5xl'} mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
+  containerClass={`hero-intro flex min-h-[calc(100svh-4.5rem)] flex-col justify-center ${hasImage ? 'max-w-6xl' : 'max-w-5xl'} mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
   bg={bg}
 >
   <div class:list={['gap-10 lg:gap-16', hasImage ? 'md:grid md:grid-cols-12 md:items-center' : '']}>
