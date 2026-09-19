@@ -35,9 +35,14 @@ const {
             <YouTube id={videoId} playlabel={playLabel ?? 'Play video'} posterQuality="high" />
           </div>
 
-          <div class:list={['md:col-span-5', align === 'right' ? 'md:order-1 md:row-start-1' : 'md:order-2']}>
+          <div
+            class:list={[
+              'text-center md:col-span-6',
+              align === 'right' ? 'md:order-1 md:row-start-1' : 'md:order-2',
+            ]}
+          >
             {metrics.length > 0 && (
-              <dl class="mb-5 flex flex-wrap gap-x-8 gap-y-3">
+              <dl class="mb-5 flex flex-wrap justify-center gap-x-8 gap-y-3">
                 {metrics.map((metric) => (
                   <div>
                     <dt class="sr-only">{metric.label}</dt>
