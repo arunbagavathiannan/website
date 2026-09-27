@@ -73,7 +73,7 @@ const {
                   )}
                 </h3>
                 {location && (
-                  <p class="inline-flex shrink-0 items-center gap-1 text-sm text-default">
+                  <p class="inline-flex shrink-0 items-center gap-1 text-[0.8rem] text-default">
                     <Icon name="tabler:map-pin" class="h-4 w-4" />
                     {location}
                   </p>
@@ -83,14 +83,13 @@ const {
               {entries.map((entry, i) => (
                 <div class:list={[i > 0 ? 'mt-5' : 'mt-2']}>
                   {entry.title && (
-                    <p class="text-lg leading-tight font-medium text-default md:text-xl">{entry.title}</p>
+                    <p class="text-base leading-tight font-medium text-default md:text-[1.0625rem]">{entry.title}</p>
                   )}
-                  {entry.dates && <p class="mt-2 text-sm leading-tight font-semibold text-primary">{entry.dates}</p>}
+                  {entry.dates && (
+                    <p class="mt-2 text-[0.8rem] leading-tight font-semibold text-primary">{entry.dates}</p>
+                  )}
                   {entry.description && (
-                    <p
-                      class="mt-2 text-[1.0625rem] leading-relaxed text-default md:text-[1.1rem]"
-                      set:html={entry.description}
-                    />
+                    <p class="mt-2 text-[0.95rem] leading-relaxed text-default" set:html={entry.description} />
                   )}
                 </div>
               ))}
