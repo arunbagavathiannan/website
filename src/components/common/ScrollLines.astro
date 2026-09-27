@@ -13,6 +13,11 @@
 // lines follow the content at any width. Measurement uses offsetTop/offsetLeft,
 // which ignore transforms, so a reveal animation mid-flight can't skew a line.
 // Hidden below the md breakpoint, where the two-column layouts stack.
+//
+// Hovering a bracketed element closes its bracket into a full rounded
+// rectangle: two caps grow up from the (faded) tops of the arms and meet
+// above the element's centre. Only once the bracket itself has been drawn,
+// and instantly under reduced motion.
 
 export interface Link {
   from: string;
@@ -29,7 +34,11 @@ export interface Props {
 const { links } = Astro.props;
 ---
 
-<aw-scroll-lines class="pointer-events-none absolute inset-0 hidden overflow-hidden md:block" aria-hidden="true" data-links={JSON.stringify(links)}>
+<aw-scroll-lines
+  class="pointer-events-none absolute inset-0 hidden overflow-hidden md:block"
+  aria-hidden="true"
+  data-links={JSON.stringify(links)}
+>
   <svg class="h-full w-full"><g data-reveal></g></svg>
 </aw-scroll-lines>
 
@@ -68,6 +77,7 @@ const { links } = Astro.props;
   type Point = [number, number];
   type Box = { x: number; y: number; w: number; h: number };
   type Stroke = { el: SVGPathElement; length: number; windows: [number, number, number][] };
+  const CLOSE_MS = 450; // how long a bracket takes to close on hover
 
   // Page position of an element, ignoring transforms.
   function measure(el: HTMLElement): Box {
@@ -105,6 +115,7 @@ const { links } = Astro.props;
     private resizeObserver: ResizeObserver | null = null;
     private desktop = window.matchMedia('(min-width: 768px)');
     private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private hoverAbort: AbortController | null = null;
     private onScroll = () => this.schedule(false);
     private onLayout = () => this.schedule(true);
 
@@ -120,6 +131,7 @@ const { links } = Astro.props;
 
     disconnectedCallback() {
       this.resizeObserver?.disconnect();
+      this.hoverAbort?.abort();
       window.removeEventListener('scroll', this.onScroll);
       this.desktop.removeEventListener('change', this.onLayout);
       cancelAnimationFrame(this.frame);
@@ -143,6 +155,8 @@ const { links } = Astro.props;
       reveal.replaceChildren();
       Array.from(this.svg.children).forEach((child) => child !== reveal && child.remove());
       this.strokes = [];
+      this.hoverAbort?.abort();
+      this.hoverAbort = new AbortController();
       if (!this.desktop.matches) return;
 
       const origin = measure(this.offsetParent as HTMLElement);
@@ -169,7 +183,17 @@ const { links } = Astro.props;
           const x = (from.x + from.w / 2 + to.x + to.w / 2) / 2;
           const top = from.y + from.h;
           const bottom = to.y;
-          if (bottom - top > GAP) this.addStroke(defs, `${i}g`, [[x, top], [x, bottom]], top, 'both');
+          if (bottom - top > GAP)
+            this.addStroke(
+              defs,
+              `${i}g`,
+              [
+                [x, top],
+                [x, bottom],
+              ],
+              top,
+              'both'
+            );
           return;
         }
 
@@ -181,11 +205,22 @@ const { links } = Astro.props;
         let armEnd = this.addPair(
           defs,
           `${i}a`,
-          [[from.x - GAP, armTop], [from.x - GAP, bottom], [jx, bottom]],
-          [[from.x + from.w + GAP, armTop], [from.x + from.w + GAP, bottom], [jx, bottom]],
+          [
+            [from.x - GAP, armTop],
+            [from.x - GAP, bottom],
+            [jx, bottom],
+          ],
+          [
+            [from.x + from.w + GAP, armTop],
+            [from.x + from.w + GAP, bottom],
+            [jx, bottom],
+          ],
           armTop,
           'in'
         );
+        const arms = this.strokes.slice(armStrokes);
+        this.addClose(fromEl, arms, from, armTop, bottom, jx);
+
         if (link.closed) {
           // Already complete on landing, so it reveals with the hero instead of drawing.
           this.strokes.slice(armStrokes).forEach((s) => {
@@ -201,7 +236,17 @@ const { links } = Astro.props;
         const ey = link.end === 'middle' ? to.y + to.h / 2 : to.y - GAP;
         const midY = (bottom + ey) / 2;
         const route: Point[] =
-          Math.abs(ex - jx) < 2 ? [[jx, bottom], [ex, ey]] : [[jx, bottom], [jx, midY], [ex, midY], [ex, ey]];
+          Math.abs(ex - jx) < 2
+            ? [
+                [jx, bottom],
+                [ex, ey],
+              ]
+            : [
+                [jx, bottom],
+                [jx, midY],
+                [ex, midY],
+                [ex, ey],
+              ];
         const fades = link.end !== 'box';
         const connectorEnd = this.addStroke(defs, `${i}c`, route, armEnd, fades ? 'out' : null);
 
@@ -213,8 +258,18 @@ const { links } = Astro.props;
           const boxEnd = this.addPair(
             defs,
             `${i}b`,
-            [[ex, ey], [left, ey], [left, boxBottom], [ex, boxBottom]],
-            [[ex, ey], [right, ey], [right, boxBottom], [ex, boxBottom]],
+            [
+              [ex, ey],
+              [left, ey],
+              [left, boxBottom],
+              [ex, boxBottom],
+            ],
+            [
+              [ex, ey],
+              [right, ey],
+              [right, boxBottom],
+              [ex, boxBottom],
+            ],
             connectorEnd,
             null
           );
@@ -223,10 +278,61 @@ const { links } = Astro.props;
           const nextEl = link.next ? document.querySelector<HTMLElement>(link.next) : null;
           if (nextEl) {
             const next = measure(nextEl);
-            this.addStroke(defs, `${i}t`, [[ex, boxBottom], [ex, next.y - origin.y]], boxEnd, 'out');
+            this.addStroke(
+              defs,
+              `${i}t`,
+              [
+                [ex, boxBottom],
+                [ex, next.y - origin.y],
+              ],
+              boxEnd,
+              'out'
+            );
           }
         }
       });
+    }
+
+    // Caps that close a bracket into a rectangle while its element is hovered.
+    // Each starts where its arm's fade-in has become solid, runs up over the
+    // faded part to the top corner and across to the centre, so the finished
+    // frame is one unbroken line.
+    private addClose(el: HTMLElement, arms: Stroke[], box: Box, armTop: number, bottom: number, jx: number) {
+      const top = box.y - GAP;
+      const solidFrom = Math.min(armTop + FADE, bottom - RADIUS);
+      const caps = [box.x - GAP, box.x + box.w + GAP].map((x) => {
+        const path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute(
+          'd',
+          toPath([
+            [x, solidFrom],
+            [x, top],
+            [jx, top],
+          ])
+        );
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', COLOR);
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('stroke-linecap', 'round');
+        this.svg.append(path);
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = `${length}`;
+        path.style.strokeDashoffset = `${length}`;
+        path.style.transition = this.reducedMotion.matches
+          ? 'none'
+          : `stroke-dashoffset ${CLOSE_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
+        return { path, length };
+      });
+
+      // Only close a bracket that has finished drawing, or the caps would hang
+      // in mid-air above a half-drawn line.
+      const armsDrawn = () => arms.every((a) => parseFloat(a.el.style.strokeDashoffset) < 1);
+      const set = (open: boolean) =>
+        caps.forEach(({ path, length }) => (path.style.strokeDashoffset = `${open ? 0 : length}`));
+
+      const { signal } = this.hoverAbort!;
+      el.addEventListener('mouseenter', () => armsDrawn() && set(true), { signal });
+      el.addEventListener('mouseleave', () => set(false), { signal });
     }
 
     // Two mirrored strokes drawn in step; returns where their timeline ends.
@@ -266,14 +372,25 @@ const { links } = Astro.props;
           // the middle and rubbing the line out.
           const t = Math.min(FADE / Math.abs(bottom - top), 0.4);
           span = [top, bottom];
-          stops = [[0, '0'], [t, '1'], [1 - t, '1'], [1, '0']];
+          stops = [
+            [0, '0'],
+            [t, '1'],
+            [1 - t, '1'],
+            [1, '0'],
+          ];
         } else if (fade === 'in') {
           span = [top, top + FADE];
-          stops = [[0, '0'], [1, '1']];
+          stops = [
+            [0, '0'],
+            [1, '1'],
+          ];
         } else {
           // Never longer than the final run, or the fade would climb the corner.
           span = [bottom - Math.min(FADE, Math.abs(bottom - ys[ys.length - 2]) * 0.9), bottom];
-          stops = [[0, '1'], [1, '0']];
+          stops = [
+            [0, '1'],
+            [1, '0'],
+          ];
         }
         const grad = document.createElementNS(SVG_NS, 'linearGradient');
         grad.id = `aw-line-${id}`;
