@@ -250,7 +250,7 @@ const { links } = Astro.props;
           armTop,
           'in'
         );
-        this.addClose(fromEl, from, bottom, jx);
+        this.addClose(fromEl, from, bottom, jx, this.strokes.slice(armStrokes));
 
         if (link.closed) {
           // Already complete on landing, so it reveals with the hero instead of drawing.
@@ -325,14 +325,13 @@ const { links } = Astro.props;
     }
 
     // Closes a bracket into a full rounded rectangle while its element is
-    // hovered, however much of the bracket scrolling has drawn so far. Two
-    // halves leave the top centre and sweep down each side to meet at the
-    // bottom centre, tracing over whatever is already drawn (and over the arms'
-    // faded tops, which read solid while closed). Leaving undraws them back to
-    // the top, which uncovers the scroll-drawn state underneath.
-    private addClose(el: HTMLElement, box: Box, bottom: number, jx: number) {
+    // hovered, however much of the bracket scrolling has drawn so far. Each
+    // side grows out of its arm as it stands: up from the arm's solid part,
+    // over the top to the centre, and down from wherever the scroll-drawn tip
+    // has reached to the bottom centre. Leaving shrinks it back into the arms.
+    private addClose(el: HTMLElement, box: Box, bottom: number, jx: number, arms: Stroke[]) {
       const top = box.y - GAP;
-      const halves = [box.x - GAP, box.x + box.w + GAP].map((x) => {
+      const sides = [box.x - GAP, box.x + box.w + GAP].map((x) => {
         const path = document.createElementNS(SVG_NS, 'path');
         path.setAttribute(
           'd',
@@ -347,20 +346,55 @@ const { links } = Astro.props;
         path.setAttribute('stroke', COLOR);
         path.setAttribute('stroke-width', '2');
         path.setAttribute('stroke-linecap', 'round');
+        path.style.opacity = '0';
         this.svg.append(path);
         const length = path.getTotalLength();
-        path.style.strokeDasharray = `${length}`;
-        path.style.strokeDashoffset = `${length}`;
-        path.style.transition = this.reducedMotion.matches
-          ? 'none'
-          : `stroke-dashoffset ${CLOSE_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
-        return { path, length };
+        path.style.strokeDasharray = `0 ${length * 2}`;
+        // The arm on this side, and where it begins along this path (the two
+        // coincide from the arm's top down, corner included).
+        const arm = arms.find((a) => Math.abs(a.el.getPointAtLength(0).x - x) < 1)!;
+        return { path, length, arm, armStart: length - arm.length };
       });
 
-      const set = (closed: boolean) =>
-        halves.forEach(({ path, length }) => (path.style.strokeDashoffset = `${closed ? 0 : length}`));
+      let progress = 0;
+      let target = 0;
+      let frame = 0;
+      let last = 0;
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+      const render = () => {
+        const e = ease(progress);
+        for (const { path, length, arm, armStart } of sides) {
+          const drawn = arm.length - parseFloat(arm.el.style.strokeDashoffset || `${arm.length}`);
+          const tip = armStart + drawn;
+          const solid = Math.min(armStart + FADE, tip);
+          const a = solid * (1 - e);
+          const b = tip + (length - tip) * e;
+          path.style.opacity = progress > 0 ? '1' : '0';
+          path.style.strokeDasharray = `${Math.max(b - a, 0)} ${length * 2}`;
+          path.style.strokeDashoffset = `${-a}`;
+        }
+      };
+
+      const step = (now: number) => {
+        const dt = last ? now - last : 16;
+        last = now;
+        const delta = this.reducedMotion.matches ? 1 : dt / CLOSE_MS;
+        progress = target > progress ? Math.min(progress + delta, 1) : Math.max(progress - delta, 0);
+        render();
+        frame = progress === target ? 0 : requestAnimationFrame(step);
+      };
+
+      const set = (closed: boolean) => {
+        target = closed ? 1 : 0;
+        if (!frame) {
+          last = 0;
+          frame = requestAnimationFrame(step);
+        }
+      };
 
       const { signal } = this.hoverAbort!;
+      signal.addEventListener('abort', () => cancelAnimationFrame(frame));
       el.addEventListener('mouseenter', () => set(true), { signal });
       el.addEventListener('mouseleave', () => set(false), { signal });
     }
