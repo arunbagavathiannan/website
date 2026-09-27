@@ -7,7 +7,8 @@
 // scroll; a box can trail a fading line down to a `next` element. A `bridge`
 // skips the bracket entirely: one plain line down the whitespace between two
 // sections, dissolving at both ends so it fills the seam without attaching
-// itself to either neighbour.
+// itself to either neighbour. A `stem` link grows out of the bottom of an
+// existing vertical line instead of a bracket, and waits for the first scroll.
 //
 // Geometry is measured from the live layout rather than hard-coded, so the
 // lines follow the content at any width. Measurement uses offsetTop/offsetLeft,
@@ -25,6 +26,9 @@ export interface Link {
   end: 'middle' | 'top' | 'box' | 'bridge';
   closed?: boolean;
   next?: string;
+  /** `from` is itself a vertical line (the hero's divider): no bracket, the
+   *  connector grows out of its lower end once the visitor starts scrolling. */
+  stem?: boolean;
 }
 
 export interface Props {
@@ -72,6 +76,7 @@ const { links } = Astro.props;
   const ARM_START = 0.6; // bracket arms begin this far down the element
   const FADE = 90; // length of the fade at the loose ends
   const PEN = 0.9; // lines are drawn up to this fraction of the viewport height
+  const STEM = 0.76; // a stem connector leaves its line this far down, where it is still solid
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
   type Point = [number, number];
@@ -164,7 +169,8 @@ const { links } = Astro.props;
       const defs = document.createElementNS(SVG_NS, 'defs');
       this.svg.append(defs);
 
-      links.forEach((link: { from: string; to: string; end: string; closed?: boolean; next?: string }, i: number) => {
+      type LinkSpec = { from: string; to: string; end: string; closed?: boolean; next?: string; stem?: boolean };
+      links.forEach((link: LinkSpec, i: number) => {
         const fromEl = document.querySelector<HTMLElement>(link.from);
         const toEl = document.querySelector<HTMLElement>(link.to);
         if (!fromEl || !toEl) return;
@@ -194,6 +200,33 @@ const { links } = Astro.props;
               top,
               'both'
             );
+          return;
+        }
+
+        // Stem: carry on from an existing line. It leaves the line where the
+        // line's own fade has not begun, so the join is seamless, and it only
+        // starts drawing once the pen moves past where it sits on page load.
+        if (link.stem) {
+          if (!from.h) return;
+          const sx = from.x + from.w / 2;
+          const sy = from.y + from.h * STEM;
+          const ex = to.x + to.w / 2;
+          const ey = link.end === 'middle' ? to.y + to.h / 2 : to.y - GAP;
+          const midY = (sy + ey) / 2;
+          const route: Point[] =
+            Math.abs(ex - sx) < 2
+              ? [
+                  [sx, sy],
+                  [ex, ey],
+                ]
+              : [
+                  [sx, sy],
+                  [sx, midY],
+                  [ex, midY],
+                  [ex, ey],
+                ];
+          const start = window.scrollY < 10 ? Math.max(sy, window.innerHeight * PEN - origin.y + 1) : sy;
+          this.addStroke(defs, `${i}s`, route, start, 'out');
           return;
         }
 

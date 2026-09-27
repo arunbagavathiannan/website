@@ -247,8 +247,10 @@ const metadata = {
 
   <ScrollLines
     links={[
+      { from: '#about .hero-divider', to: '#experience h2', end: 'middle', stem: true },
       { from: '#experience ol > li:last-child', to: '#education h2', end: 'bridge' },
       { from: '#education ol > li:last-child', to: '#projects h2', end: 'bridge' },
+      { from: '#projects ul', to: '#video h2', end: 'bridge' },
       {
         from: '#video .gap-14 > :nth-child(1) .video-frame',
         to: '#video .gap-14 > :nth-child(2) .video-frame',
