@@ -30,6 +30,9 @@ export interface Props {
   showToggleTheme?: boolean;
   showRssFeed?: boolean;
   position?: string;
+  /** `glass` floats the header over a full-screen hero: fixed, and at `lg` a
+   *  centred translucent pill. Phones keep the regular bar and mobile menu. */
+  variant?: 'default' | 'glass';
 }
 
 const {
@@ -42,7 +45,10 @@ const {
   showToggleTheme = false,
   showRssFeed = false,
   position = 'center',
+  variant = 'default',
 } = Astro.props;
+
+const isGlass = variant === 'glass';
 
 const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
 
@@ -57,7 +63,7 @@ const isActive = (href?: string) => typeof href === 'string' && `/${trimSlash(hr
 // with its own menu (the demo homes, the landing pages) would keep showing the
 // header of the page the visitor came from. Hash the props that shape the markup.
 const persistKey = `header-${Array.from(
-  JSON.stringify({ links, actions, isSticky, isDark, isFullWidth, showToggleTheme, showRssFeed, position })
+  JSON.stringify({ links, actions, isSticky, isDark, isFullWidth, showToggleTheme, showRssFeed, position, variant })
 )
   .reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7)
   .toString(36)}`;
@@ -66,7 +72,7 @@ const persistKey = `header-${Array.from(
 <aw-header transition:persist={persistKey}>
   <header
     class:list={[
-      { sticky: isSticky, relative: !isSticky, dark: isDark },
+      isGlass ? 'aw-glass fixed inset-x-0' : { sticky: isSticky, relative: !isSticky, dark: isDark },
       'top-0 z-40 flex-none mx-auto w-full border-b border-gray-50/0 transition-[opacity] ease-in-out',
     ]}
     {...isSticky ? { 'data-aw-sticky-header': true } : {}}
@@ -76,19 +82,23 @@ const persistKey = `header-${Array.from(
     <div
       class:list={[
         'relative text-default py-3 px-3 lg:px-6 mx-auto w-full',
-        {
-          'lg:flex lg:justify-between': position !== 'center',
-        },
-        {
-          'lg:grid lg:grid-cols-3 lg:items-center': position === 'center',
-        },
-        {
-          'max-w-7xl': !isFullWidth,
-        },
+        isGlass
+          ? 'lg:mt-4 lg:flex lg:w-fit lg:items-center lg:rounded-full lg:border lg:border-black/10 lg:bg-white/50 dark:lg:border-white/10 dark:lg:bg-white/5 lg:py-1 lg:pr-2 lg:pl-5 lg:backdrop-blur-md lg:transition-[background-color]'
+          : [
+              {
+                'lg:flex lg:justify-between': position !== 'center',
+              },
+              {
+                'lg:grid lg:grid-cols-3 lg:items-center': position === 'center',
+              },
+              {
+                'max-w-7xl': !isFullWidth,
+              },
+            ],
       ]}
     >
       <div class:list={[{ 'mr-auto rtl:mr-0 rtl:ml-auto': position === 'right' }, 'flex justify-between']}>
-        <a class="flex items-center" href={getHomePermalink()}>
+        <a class="flex items-center" href={getHomePermalink()} data-aw-home>
           <Logo />
         </a>
         <div class="flex items-center lg:hidden">
@@ -157,7 +167,17 @@ const persistKey = `header-${Array.from(
       >
         <div class="items-center flex justify-between w-full lg:w-auto">
           <div class="flex">
-            {showToggleTheme && <ToggleTheme iconClass="w-6 h-6 lg:w-5 lg:h-5 lg:inline-block" />}
+            {
+              showToggleTheme &&
+                (isGlass ? (
+                  <ToggleTheme
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted transition hover:bg-black/5 hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 dark:hover:bg-white/10"
+                    iconClass="w-6 h-6 lg:w-5 lg:h-5"
+                  />
+                ) : (
+                  <ToggleTheme iconClass="w-6 h-6 lg:w-5 lg:h-5 lg:inline-block" />
+                ))
+            }
             {
               showRssFeed && (
                 <a
@@ -238,6 +258,19 @@ const persistKey = `header-${Array.from(
 
       // Close the mobile menu when a nav link is clicked.
       nav?.addEventListener('click', closeMenu);
+
+      // The logo links home. When already on the home page, a click would
+      // otherwise do nothing, so scroll back to the top instead.
+      const home = this.querySelector<HTMLAnchorElement>('[data-aw-home]');
+      home?.addEventListener('click', (e) => {
+        const norm = (p: string) => p.replace(/index\.html$/, '').replace(/\/+$/, '');
+        if (norm(new URL(home.href).pathname) !== norm(window.location.pathname)) return;
+        e.preventDefault();
+        closeMenu();
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search);
+      });
 
       // Desktop dropdowns open on hover/`:focus-within`. When a dropdown link is
       // clicked it keeps focus, and because the header uses `transition:persist`

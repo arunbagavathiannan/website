@@ -28,7 +28,7 @@ const {
   <div class="flex flex-col gap-14 md:gap-20">
     {
       items.map(({ id: videoId, description, metrics = [], playLabel, align = 'left' }) => (
-        <div class="grid items-center gap-8 md:grid-cols-12 md:gap-12 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+        <div class="grid items-center gap-8 md:grid-cols-12 md:gap-12">
           <div
             class:list={['video-frame md:col-span-6', align === 'right' ? 'md:order-2 md:col-start-7' : 'md:order-1']}
           >
@@ -36,10 +36,7 @@ const {
           </div>
 
           <div
-            class:list={[
-              'text-center md:col-span-6',
-              align === 'right' ? 'md:order-1 md:row-start-1' : 'md:order-2',
-            ]}
+            class:list={['text-center md:col-span-6', align === 'right' ? 'md:order-1 md:row-start-1' : 'md:order-2']}
           >
             {metrics.length > 0 && (
               <dl class="mb-5 flex flex-wrap justify-center gap-x-8 gap-y-3">
@@ -47,14 +44,17 @@ const {
                   <div>
                     <dt class="sr-only">{metric.label}</dt>
                     <dd class="text-2xl font-extrabold leading-none tracking-tight text-primary">{metric.value}</dd>
-                    <dd class="mt-1 text-sm uppercase tracking-[0.14em] text-muted">{metric.label}</dd>
+                    <dd class="mt-1 text-sm uppercase tracking-[0.14em] text-default">{metric.label}</dd>
                   </div>
                 ))}
               </dl>
             )}
 
             {description && (
-              <p class="video-copy text-base leading-relaxed text-muted text-pretty" set:html={description} />
+              <p
+                class="video-copy text-[1.0625rem] leading-relaxed text-default text-pretty md:text-[1.1rem]"
+                set:html={description}
+              />
             )}
           </div>
         </div>

@@ -404,6 +404,14 @@ export interface Project {
   linkText?: string;
   /** A measurable outcome shown with a trend icon, e.g. "+38 % conversions". */
   result?: string;
+  /** The project's own identity: a logo tile and a soft glow in its colours. */
+  brand?: {
+    /** Icon name for the logo tile, e.g. `tabler:trending-up`. */
+    icon: string;
+    color: string;
+    /** Second colour for the tile's gradient. Defaults to `color`. */
+    colorTo?: string;
+  };
 }
 
 export interface Projects extends Omit<Headline, 'classes'>, Widget {
@@ -505,22 +513,20 @@ export interface SocialLink {
 }
 
 export interface HeroIntro extends Widget {
-  /** Display name, rendered as the page <h1>. Accepts inline HTML. */
+  /** Display name, rendered as the page <h1> in the serif face. Accepts inline HTML. */
   name?: string;
-  /** Introductory prose. Accepts inline HTML so links can sit inside sentences. */
+  /** Introductory prose beside the name. Accepts inline HTML so links can sit inside sentences. */
   intro?: string;
-  /** Small uppercase line above the name. */
-  tagline?: string;
-  /** Text link to a résumé or CV. */
+  /** Glass button linking to a résumé or CV. */
   resume?: { text?: string; href: string; icon?: string };
   socials?: Array<SocialLink>;
-  /** Portrait shown beside the text at `md` and up. Its lower edge fades out. */
-  image?: {
-    src: ImageMetadata | string;
-    alt: string;
-    /** Small line under the image, e.g. a location. */
-    caption?: string;
-  };
+}
+
+export interface ExperienceRole {
+  title?: string;
+  dates?: string;
+  /** Accepts inline HTML. */
+  description?: string;
 }
 
 export interface ExperienceItem {
@@ -532,6 +538,9 @@ export interface ExperienceItem {
   dates?: string;
   /** Accepts inline HTML. */
   description?: string;
+  /** Several roles at the same organisation, newest first, stacked under one
+   *  heading in place of `role` / `dates` / `description`. */
+  roles?: Array<ExperienceRole>;
   logo?: string | ImageMetadata;
   /** Icon fallback when there is no logo. */
   icon?: string;

@@ -36,6 +36,7 @@ export default defineConfig({
   // Native Fonts API: self-hosts + subsets + preloads Inter and generates
   // metric-adjusted fallbacks. Injected via <Font /> in Layout.astro and
   // consumed through the `--font-inter` CSS variable in CustomStyles.astro.
+  // Instrument Serif is the display face for the homepage hero (`--font-instrument-serif`).
   fonts: [
     {
       provider: fontProviders.fontsource(),
@@ -45,6 +46,15 @@ export default defineConfig({
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Instrument Serif',
+      cssVariable: '--font-instrument-serif',
+      weights: [400],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['serif'],
     },
   ],
 

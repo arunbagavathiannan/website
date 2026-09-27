@@ -1,0 +1,408 @@
+---
+// Isometric low-poly scene for the homepage hero: a plinth with two screens
+// standing on it like the walls of a room. The left one is a video editor's
+// timeline with a playhead sweeping across; the right one is a code editor
+// that types itself out. A few blocks and floating tiles sit on the floor,
+// and the screens throw a burnt-orange glow onto it.
+//
+// Drawn with the projection helpers in src/utils/iso.ts; everything but the
+// footage in the program monitor takes theme-aware fills, so the editor and
+// the code screen switch to light UIs in light mode. Animated elements are nested inside the
+// projected groups, so a plain translateX on the playhead moves it along the
+// tilted screen.
+//
+// Under reduced motion nothing moves and the code is shown fully typed.
+
+import { makeIso, ISO_ORANGE, ISO_STONE } from '~/utils/iso';
+
+const { floor: FLOOR, leftFace, rightFace, box } = makeIso(450, 250);
+const f = (n: number) => Math.round(n * 10) / 10;
+
+// Deterministic audio waveform for the A1 track.
+const wave = Array.from({ length: 66 }, (_, i) => {
+  const h = 3 + Math.abs(Math.sin(i * 0.55) * 7 + Math.sin(i * 1.7) * 4);
+  return { x: 36 + i * 4, h: f(h) };
+});
+
+// Non-breaking spaces, so the HTML minifier can't collapse code indentation.
+const nbsp = (t: string) => t.replace(/ /g, '\u00a0');
+
+type Token = [string, 'k' | 'v' | 'f' | 'p' | 'c'];
+const code: Token[][] = [
+  [
+    ['const ', 'k'],
+    ['course ', 'v'],
+    ['= ', 'p'],
+    ['await ', 'k'],
+    ['getCourse', 'f'],
+    ['(id);', 'p'],
+  ],
+  [
+    ['const ', 'k'],
+    ['{ seats } ', 'v'],
+    ['= ', 'p'],
+    ['course', 'v'],
+    [';', 'p'],
+  ],
+  [],
+  [
+    ['if ', 'k'],
+    ['(seats.', 'p'],
+    ['open', 'v'],
+    [') {', 'p'],
+  ],
+  [
+    ['  notify', 'f'],
+    ['(students);', 'p'],
+  ],
+  [['}', 'p']],
+  [],
+  [['// 60,000+ students, every semester', 'c']],
+];
+const terminal: Token[][] = [[['$ pnpm build', 'p']], [['✓ built in 1.2s', 'k']]];
+---
+
+<svg
+  class="hero-scene h-auto w-full"
+  viewBox="76 60 748 640"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <radialGradient id="hs-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#f06e14" stop-opacity="0.55"></stop>
+      <stop offset="1" stop-color="#f06e14" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="hs-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2522"></stop>
+      <stop offset="0.62" stop-color="#bf5700"></stop>
+      <stop offset="1" stop-color="#f3a45c"></stop>
+    </linearGradient>
+    <pattern id="hs-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M30 0H0V30" class="iso-grid" stroke-width="1"></path>
+    </pattern>
+    <!-- Soft contact shadow: darkest under the tile, fading out to nothing. -->
+    <radialGradient id="hs-shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" class="hs-shadow-stop" stop-opacity="1"></stop>
+      <stop offset="0.45" class="hs-shadow-stop" stop-opacity="0.55"></stop>
+      <stop offset="1" class="hs-shadow-stop" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+
+  <!-- Plinth -->
+  <g transform={FLOOR}>
+    <rect width="420" height="420" class="iso-plate-t"></rect>
+    <rect width="420" height="420" fill="url(#hs-grid)"></rect>
+  </g>
+  <g transform={leftFace(0, 420, 0)}><rect width="420" height="22" class="iso-plate-l"></rect></g>
+  <g transform={rightFace(420, 420, 0)}><rect width="420" height="22" class="iso-plate-r"></rect></g>
+
+  <!-- Glow the screens cast on the floor -->
+  <g class="iso-glow"
+    ><g transform={FLOOR} class="hs-glow">
+      <ellipse cx="120" cy="250" rx="120" ry="150" fill="url(#hs-glow)"></ellipse>
+      <ellipse cx="250" cy="110" rx="150" ry="110" fill="url(#hs-glow)"></ellipse>
+    </g>
+  </g>
+
+  <!-- Timeline screen (faces right-front, stands along the back-left edge) -->
+  <g transform="translate(0 -230)">
+    <g transform={FLOOR}><rect x="28" y="80" width="12" height="320" class="iso-wall-t"></rect></g>
+  </g>
+  <g transform={leftFace(28, 400, 230)}><rect width="12" height="230" class="iso-wall-cap"></rect></g>
+  <g transform={rightFace(40, 400, 230)}>
+    <rect width="320" height="230" class="iso-bezel"></rect>
+    <rect x="10" y="10" width="300" height="210" rx="3" class="iso-screen"></rect>
+
+    <circle cx="22" cy="20" r="2.5" class="iso-ui"></circle>
+    <circle cx="31" cy="20" r="2.5" class="iso-ui"></circle>
+    <circle cx="40" cy="20" r="2.5" class="iso-ui"></circle>
+    <text x="54" y="23" class="hs-mono iso-label" font-size="8">edit.prproj</text>
+    <text x="300" y="23" class="hs-mono hs-timecode" font-size="8" fill="#f06e14" text-anchor="end">00:04:12:08</text>
+
+    <!-- Program monitor: an abstract sunset -->
+    <rect x="70" y="34" width="180" height="92" rx="2" fill="url(#hs-sky)"></rect>
+    <circle cx="160" cy="98" r="14" fill="#ffd9ae" opacity="0.9"></circle>
+    <path d="M70 112 L110 92 L140 106 L178 84 L214 104 L250 94 V126 H70 Z" fill="#141312"></path>
+
+    <!-- Ruler -->
+    {
+      Array.from({ length: 14 }, (_, i) => (
+        <line x1={36 + i * 20} y1="136" x2={36 + i * 20} y2={i % 2 ? 139 : 142} class="iso-tick" />
+      ))
+    }
+
+    <!-- Tracks -->
+    <text x="16" y="157" class="hs-mono iso-label" font-size="7">V2</text>
+    <text x="16" y="177" class="hs-mono iso-label" font-size="7">V1</text>
+    <text x="16" y="200" class="hs-mono iso-label" font-size="7">A1</text>
+    <rect x="84" y="148" width="54" height="14" rx="2" class="iso-ui"></rect>
+    <rect x="196" y="148" width="72" height="14" rx="2" class="iso-clip-dim"></rect>
+    <rect x="36" y="168" width="88" height="14" rx="2" class="iso-ui-2"></rect>
+    <rect x="128" y="168" width="62" height="14" rx="2" fill="#bf5700"></rect>
+    <rect x="194" y="168" width="108" height="14" rx="2" class="iso-ui-2"></rect>
+    <rect x="148" y="172" width="5" height="5" fill="#ffd9ae" transform="rotate(45 150.5 174.5)"></rect>
+    <rect x="170" y="172" width="5" height="5" fill="#ffd9ae" transform="rotate(45 172.5 174.5)"></rect>
+    {wave.map((b) => <rect x={b.x} y={198 - b.h / 2} width="2" height={b.h} rx="1" class="iso-wave" />)}
+
+    <!-- Playhead -->
+    <g class="hs-playhead">
+      <path d="M32 130 H40 V134 L36 138 L32 134 Z" fill="#f06e14"></path>
+      <line x1="36" y1="136" x2="36" y2="214" stroke="#f06e14" stroke-width="1.5"></line>
+    </g>
+  </g>
+
+  <!-- Code screen (faces left-front, stands along the back-right edge) -->
+  <g transform="translate(0 -230)">
+    <g transform={FLOOR}><rect x="80" y="28" width="320" height="12" class="iso-wall-t"></rect></g>
+  </g>
+  <g transform={rightFace(400, 40, 230)}><rect width="12" height="230" class="iso-wall-cap"></rect></g>
+  <g transform={leftFace(80, 40, 230)}>
+    <rect width="320" height="230" class="iso-bezel"></rect>
+    <rect x="10" y="10" width="300" height="210" rx="3" class="iso-screen"></rect>
+
+    <circle cx="22" cy="20" r="2.5" class="iso-ui"></circle>
+    <circle cx="31" cy="20" r="2.5" class="iso-ui"></circle>
+    <circle cx="40" cy="20" r="2.5" class="iso-ui"></circle>
+    <text x="54" y="23" class="hs-mono iso-label" font-size="8">seats.ts</text>
+
+    <g class="hs-mono hs-pre" font-size="10.5" data-hs-code>
+      {
+        code.map((line, i) => (
+          <>
+            <text x="22" y={48 + i * 15} class="iso-ln" font-size="8">
+              {i + 1}
+            </text>
+            <text x="40" y={48 + i * 15} data-hs-line>
+              {line.map(([t, k]) => (
+                <tspan class={`hs-${k}`}>{nbsp(t)}</tspan>
+              ))}
+            </text>
+          </>
+        ))
+      }
+    </g>
+
+    <rect x="10" y="176" width="300" height="44" class="iso-screen-2"></rect>
+    <g class="hs-mono hs-pre" font-size="10" data-hs-code>
+      {
+        terminal.map((line, i) => (
+          <text x="22" y={193 + i * 15} data-hs-line>
+            {line.map(([t, k]) => (
+              <tspan class={`hs-${k}`}>{nbsp(t)}</tspan>
+            ))}
+          </text>
+        ))
+      }
+    </g>
+    <rect class="hs-cursor" x="40" y="40" width="5" height="10" fill="#f06e14" data-hs-cursor></rect>
+  </g>
+
+  <!-- Blocks on the floor -->
+  <Fragment set:html={box(300, 230, 42, 42, 42, ISO_ORANGE)} />
+  <Fragment set:html={box(196, 342, 34, 34, 18, ISO_STONE)} />
+
+  <!-- Floating tiles, each with its shadow on the floor -->
+  <g transform={FLOOR}>
+    <ellipse class="hs-shadow hs-shadow-a" cx="245" cy="165" rx="54" ry="54" fill="url(#hs-shadow)"></ellipse>
+    <ellipse class="hs-shadow hs-shadow-b" cx="165" cy="295" rx="44" ry="44" fill="url(#hs-shadow)"></ellipse>
+  </g>
+
+  <g class="hs-bob hs-bob-a">
+    <Fragment set:html={box(210, 130, 70, 70, 8, ISO_ORANGE, 78)} />
+    <g transform="translate(0 -86)">
+      <g transform={FLOOR}><path d="M234 150 L262 165 L234 180 Z" fill="#fff4e8"></path></g>
+    </g>
+  </g>
+
+  <g class="hs-bob hs-bob-b">
+    <Fragment set:html={box(136, 266, 58, 58, 7, ISO_STONE, 58)} />
+    <g transform="translate(0 -65)">
+      <g transform={FLOOR}>
+        <text x="165" y="301" text-anchor="middle" class="hs-mono" font-size="20" font-weight="600" fill="#f06e14"
+          >&lt;/&gt;</text
+        >
+      </g>
+    </g>
+  </g>
+</svg>
+
+<style>
+  .hs-mono {
+    font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .hs-pre {
+    white-space: pre;
+  }
+  .hs-k {
+    fill: var(--iso-code-k);
+  }
+  .hs-v {
+    fill: var(--iso-code-v);
+  }
+  .hs-f {
+    fill: var(--iso-code-f);
+  }
+  .hs-p {
+    fill: var(--iso-code-p);
+  }
+  .hs-c {
+    fill: var(--iso-code-c);
+  }
+  .hs-cursor {
+    opacity: 0;
+  }
+  .hs-shadow-stop {
+    stop-color: var(--iso-shadow);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-scene {
+      animation: hsEnter 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s both;
+    }
+    .hs-playhead {
+      animation: hsPlay 9s linear infinite;
+    }
+    .hs-glow {
+      animation: hsGlow 5s ease-in-out infinite alternate;
+    }
+    .hs-bob,
+    .hs-shadow {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: hsBob 5s ease-in-out infinite alternate;
+    }
+    .hs-shadow {
+      animation-name: hsShadow;
+    }
+    .hs-bob-b,
+    .hs-shadow-b {
+      animation-duration: 6.5s;
+      animation-delay: -2s;
+    }
+    .hs-cursor.is-typing {
+      opacity: 1;
+      animation: hsBlink 1s steps(1) infinite;
+    }
+
+    @keyframes hsEnter {
+      from {
+        opacity: 0;
+        filter: blur(14px);
+        transform: translate3d(0, 1.5rem, 0);
+      }
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    @keyframes hsPlay {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(264px);
+      }
+    }
+    @keyframes hsGlow {
+      from {
+        opacity: 0.55;
+      }
+      to {
+        opacity: 0.9;
+      }
+    }
+    @keyframes hsBob {
+      from {
+        transform: translateY(-5px);
+      }
+      to {
+        transform: translateY(7px);
+      }
+    }
+    @keyframes hsShadow {
+      from {
+        transform: scale(0.88);
+        opacity: 0.65;
+      }
+      to {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+    }
+    @keyframes hsBlink {
+      50% {
+        opacity: 0;
+      }
+    }
+  }
+</style>
+
+<script>
+  // Types the code screen line by line, holds, then starts over. The markup
+  // ships fully typed, so without JS or under reduced motion it just shows.
+  type Line = { el: SVGTextElement; spans: { el: SVGTSpanElement; text: string }[] };
+
+  const start = () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const svg = document.querySelector<SVGSVGElement>('.hero-scene');
+    if (!svg || svg.dataset.typing) return;
+    svg.dataset.typing = 'true';
+
+    const cursor = svg.querySelector<SVGRectElement>('[data-hs-cursor]');
+    const lines: Line[] = Array.from(svg.querySelectorAll<SVGTextElement>('[data-hs-line]')).map((el) => ({
+      el,
+      spans: Array.from(el.querySelectorAll('tspan')).map((span) => ({ el: span, text: span.textContent ?? '' })),
+    }));
+
+    const clear = () => lines.forEach((l) => l.spans.forEach((s) => (s.el.textContent = '')));
+    const placeCursor = (line: Line) => {
+      if (!cursor) return;
+      const x = Number(line.el.getAttribute('x')) + line.el.getComputedTextLength() + 1;
+      const y = Number(line.el.getAttribute('y')) - 8;
+      cursor.setAttribute('x', String(x));
+      cursor.setAttribute('y', String(y));
+    };
+
+    let li = 0;
+    let si = 0;
+    let ci = 0;
+    const tick = () => {
+      if (!svg.isConnected) return;
+      const line = lines[li];
+      if (!line) {
+        setTimeout(() => {
+          clear();
+          li = si = ci = 0;
+          tick();
+        }, 3200);
+        return;
+      }
+      const span = line.spans[si];
+      if (!span) {
+        li += 1;
+        si = ci = 0;
+        setTimeout(tick, 260);
+        return;
+      }
+      ci += 1;
+      span.el.textContent = span.text.slice(0, ci);
+      placeCursor(line);
+      if (ci >= span.text.length) {
+        si += 1;
+        ci = 0;
+      }
+      setTimeout(tick, 38 + Math.random() * 45);
+    };
+
+    clear();
+    cursor?.classList.add('is-typing');
+    if (lines[0]) placeCursor(lines[0]);
+    setTimeout(tick, 900);
+  };
+
+  document.addEventListener('astro:page-load', start);
+</script>

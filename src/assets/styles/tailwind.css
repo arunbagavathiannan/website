@@ -88,6 +88,154 @@
   box-shadow: none;
 }
 
+/* Glass header (Header variant="glass"): at `lg` the bar is a floating pill,
+   so the full-width layer stays clear and the pill itself firms up once
+   scrolled, to stay legible over the sections below. Phones keep the bar. */
+@media (width >= 64rem) {
+  #header.aw-glass.scroll > div:first-child,
+  .dark #header.aw-glass.scroll > div:first-child {
+    background-color: transparent;
+    backdrop-filter: none;
+    border: 0;
+    box-shadow: none;
+  }
+  #header.aw-glass.scroll > div:last-child {
+    background-color: color-mix(in srgb, var(--aw-color-bg-page) 80%, transparent);
+  }
+}
+
+/* Isometric hero scene (HeroScene.astro; helpers in src/utils/iso.ts). Light
+   geometry on the light page, graphite at night; burnt orange stays the same
+   in both. */
+:root {
+  --iso-plate-t: #e8e4dd;
+  --iso-plate-l: #d5d0c7;
+  --iso-plate-r: #c2bcb2;
+  --iso-grid: rgb(0 0 0 / 5%);
+  --iso-bezel: #f7f5f1;
+  --iso-wall-t: #ffffff;
+  --iso-wall-cap: #d9d4cc;
+  --iso-stone-t: #f4f1ec;
+  --iso-stone-l: #dfdad2;
+  --iso-stone-r: #cac4ba;
+  --iso-shadow: rgb(70 45 20 / 16%);
+  --iso-glow: 0.4;
+  --iso-screen: #fcfbf9;
+  --iso-screen-2: #f2efea;
+  --iso-ui: #e6e2db;
+  --iso-ui-2: #d8d3ca;
+  --iso-clip-dim: #f4cfae;
+  --iso-label: #9a948c;
+  --iso-tick: #d8d3ca;
+  --iso-wave: #c2bbb0;
+  --iso-ln: #cbc6be;
+  --iso-code-k: #c25400;
+  --iso-code-v: #2a2622;
+  --iso-code-f: #9a4800;
+  --iso-code-p: #6f6a64;
+  --iso-code-c: #aaa39a;
+}
+.dark {
+  --iso-plate-t: #161617;
+  --iso-plate-l: #101011;
+  --iso-plate-r: #0a0a0b;
+  --iso-grid: rgb(255 255 255 / 4%);
+  --iso-bezel: #1f1f21;
+  --iso-wall-t: #2c2c2e;
+  --iso-wall-cap: #151516;
+  --iso-stone-t: #3a3a3d;
+  --iso-stone-l: #29292b;
+  --iso-stone-r: #1b1b1d;
+  --iso-shadow: rgb(0 0 0 / 45%);
+  --iso-glow: 0.75;
+  --iso-screen: #0a0a0b;
+  --iso-screen-2: #111112;
+  --iso-ui: #2c2c2e;
+  --iso-ui-2: #3a3a3c;
+  --iso-clip-dim: #5a2a06;
+  --iso-label: #6b6b6e;
+  --iso-tick: #3a3a3c;
+  --iso-wave: #55555a;
+  --iso-ln: #3f3f42;
+  --iso-code-k: #f06e14;
+  --iso-code-v: #ededed;
+  --iso-code-f: #ffc58f;
+  --iso-code-p: #9a9a9e;
+  --iso-code-c: #56565a;
+}
+.iso-plate-t {
+  fill: var(--iso-plate-t);
+}
+.iso-plate-l {
+  fill: var(--iso-plate-l);
+}
+.iso-plate-r {
+  fill: var(--iso-plate-r);
+}
+.iso-grid {
+  stroke: var(--iso-grid);
+}
+.iso-bezel {
+  fill: var(--iso-bezel);
+}
+.iso-wall-t {
+  fill: var(--iso-wall-t);
+}
+.iso-wall-cap {
+  fill: var(--iso-wall-cap);
+}
+.iso-stone-t {
+  fill: var(--iso-stone-t);
+}
+.iso-stone-l {
+  fill: var(--iso-stone-l);
+}
+.iso-stone-r {
+  fill: var(--iso-stone-r);
+}
+.iso-shadow {
+  fill: var(--iso-shadow);
+}
+.iso-glow {
+  opacity: var(--iso-glow);
+}
+.iso-screen {
+  fill: var(--iso-screen);
+}
+.iso-screen-2 {
+  fill: var(--iso-screen-2);
+}
+.iso-ui {
+  fill: var(--iso-ui);
+}
+.iso-ui-2 {
+  fill: var(--iso-ui-2);
+}
+.iso-clip-dim {
+  fill: var(--iso-clip-dim);
+}
+.iso-label {
+  fill: var(--iso-label);
+}
+.iso-tick {
+  stroke: var(--iso-tick);
+}
+.iso-wave {
+  fill: var(--iso-wave);
+}
+.iso-ln {
+  fill: var(--iso-ln);
+}
+.iso-or-t {
+  fill: #e0781f;
+}
+.iso-or-l {
+  fill: #bf5700;
+}
+.iso-or-r {
+  fill: #823b00;
+}
+
 #header.expanded nav {
   position: fixed;
   top: 4.375rem;

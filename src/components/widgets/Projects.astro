@@ -45,17 +45,20 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
 
   <ul class:list={['grid gap-6 md:gap-8 list-none', columnsClass]}>
     {
-      items.map(({ title: itemTitle, description, image, tags, href, result, linkText }) => {
+      items.map(({ title: itemTitle, description, image, tags, href, result, linkText, brand }) => {
         const Card = href ? 'a' : 'div';
         return (
-          <li class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+          <li>
             <Card
               href={href}
               class:list={[
-                'group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-white/[0.03] shadow-sm',
-                'transition hover:-translate-y-0.5 hover:shadow-lg hover:border-primary',
+                'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-white/[0.03] shadow-sm',
+                'transition hover:-translate-y-0.5 hover:shadow-lg',
+                brand ? 'hover:border-(--brand)' : 'hover:border-primary',
               ]}
+              style={brand ? `--brand: ${brand.color}; --brand-to: ${brand.colorTo ?? brand.color}` : undefined}
             >
+              {brand && <div class="project-glow pointer-events-none absolute inset-0" aria-hidden="true" />}
               {image &&
                 (typeof image === 'string' ? (
                   <Fragment set:html={image} />
@@ -74,18 +77,30 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
                     />
                   </div>
                 ))}
-              <div class="flex flex-1 flex-col p-6">
-                {tags && tags.length > 0 && (
-                  <ul class="mb-3 flex flex-wrap gap-1.5 list-none">
-                    {tags.map((tag) => (
-                      <li class:list={['rounded-full px-2.5 py-0.5 text-xs font-medium', tagClass(tag)]}>
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
+              <div class="relative flex flex-1 flex-col p-6">
+                {(brand || (tags && tags.length > 0)) && (
+                  <div class="mb-4 flex items-center gap-3">
+                    {brand && (
+                      <span class="project-logo flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white">
+                        <Icon name={brand.icon} class="h-6 w-6" />
+                      </span>
+                    )}
+                    {tags && tags.length > 0 && (
+                      <ul class="flex flex-wrap gap-1.5 list-none">
+                        {tags.map((tag) => (
+                          <li class:list={['rounded-full px-2.5 py-0.5 text-xs font-medium', tagClass(tag)]}>{tag}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
-                {itemTitle && <h3 class="text-lg font-bold text-heading">{itemTitle}</h3>}
-                {description && <p class="mt-2 text-muted text-pretty" set:html={description} />}
+                {itemTitle && <h3 class="text-xl font-bold text-heading">{itemTitle}</h3>}
+                {description && (
+                  <p
+                    class="mt-2 text-base leading-relaxed text-default text-pretty md:text-[1.0625rem]"
+                    set:html={description}
+                  />
+                )}
                 {result && (
                   <p class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
                     <Icon name="tabler:trending-up" class="h-4 w-4" />
@@ -116,3 +131,59 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
     )
   }
 </WidgetWrapper>
+
+<style>
+  /* Per-project identity: a gradient logo tile and a soft glow in the card's
+     corner, both from the project's own colours (set as --brand / --brand-to). */
+  .project-logo {
+    background: linear-gradient(135deg, var(--brand-to), var(--brand));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 25%),
+      0 8px 18px -8px var(--brand);
+  }
+  /* The glow is a radial gradient over the whole card, anchored in the top-right
+     corner. At rest it is a faint tint tucked into that corner; on hover it
+     spreads across the card while thinning out. It always reaches full
+     transparency by the farthest corner, so however far it spreads it fades
+     out rather than being cut off by the card's edge. Spread and strength are
+     registered properties so the gradient itself animates. */
+  @property --glow-spread {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 40%;
+  }
+  @property --glow-strength {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 26%;
+  }
+  .project-glow {
+    --glow-spread: 40%;
+    --glow-strength: 26%;
+    background: radial-gradient(
+      circle farthest-corner at 100% 0%,
+      color-mix(in srgb, var(--brand) var(--glow-strength), transparent) 0%,
+      color-mix(in srgb, var(--brand) calc(var(--glow-strength) * 0.55), transparent) calc(var(--glow-spread) * 0.35),
+      color-mix(in srgb, var(--brand) calc(var(--glow-strength) * 0.2), transparent) calc(var(--glow-spread) * 0.7),
+      transparent var(--glow-spread)
+    );
+    transition:
+      --glow-spread 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+      --glow-strength 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .group:hover .project-glow {
+    --glow-spread: 100%;
+    --glow-strength: 18%;
+  }
+  :global(.dark) .project-glow {
+    --glow-strength: 24%;
+  }
+  :global(.dark) .group:hover .project-glow {
+    --glow-strength: 15%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-glow {
+      transition: none;
+    }
+  }
+</style>

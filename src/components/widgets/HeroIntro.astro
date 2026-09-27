@@ -1,153 +1,144 @@
 ---
 import { Icon } from 'astro-icon/components';
-import Image from '~/components/common/Image.astro';
-import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import HeroScene from '~/components/widgets/HeroScene.astro';
 import type { HeroIntro as Props } from '~/types';
 
-// Editorial hero: an oversized name, a prose introduction carrying its own
-// inline links, a row of monochrome social squares, and an optional portrait
-// held to the right, its upper edge dissolving into the page. The paragraph does the work a Hero's CTA row usually
-// does, so the claims stay in sentences instead of being broken into chrome.
+// Editorial hero: a serif name, a prose introduction carrying its own inline
+// links, the résumé button in the same glass as the floating nav and a row of
+// socials, with the isometric scene (see HeroScene.astro) held to the right
+// where a portrait would sit. The paragraph does the work a Hero's CTA row
+// usually does, so the claims stay in sentences instead of being broken into
+// chrome.
+//
+// The name sets the width of the text column: the wrapper shrinks to fit the
+// (unwrapping) name, and the paragraph and action row take that width without
+// widening it (w-0 min-w-full), so the paragraph's right edge lines up with
+// the end of the name. On phones the paragraph takes the full width instead.
+//
+// A burnt-orange rule, faded at both ends like the connector lines between
+// sections, separates the text from the scene at `md` and up.
+//
+// It reserves the whole first screen with the content centred in it, so
+// whatever follows starts below the fold. The header floats over the top
+// (fixed), so the top padding clears it. svh rather than vh is the height with
+// mobile browser chrome showing, which is what is actually visible on load.
 //
 // Unlike the other widgets this one reveals on first paint rather than on
 // scroll: it is already above the fold, so an intersection-driven fade would
 // either fire instantly or, worse, never.
-//
-// It also reserves the whole first screen, content centred in it, so whatever
-// follows starts below the fold and the landing reads as one thing rather than
-// running into the next section. The header is in normal flow above this, so
-// the reservation is the screen minus the header's own height (the same 4.5rem
-// the anchor offsets in WidgetWrapper use). svh rather than vh is the height
-// with mobile browser chrome showing, which is what is actually visible on
-// load. Being in viewport units, the reservation holds at whatever root type
-// scale Layout.astro is set to.
 
 const {
   name = await Astro.slots.render('name'),
   intro = await Astro.slots.render('intro'),
-  tagline,
   resume,
   socials = [],
-  image,
 
   id,
-  isDark = false,
   classes = {},
-  bg = await Astro.slots.render('bg'),
 } = Astro.props;
-
-const hasImage = Boolean(image);
 ---
 
-<WidgetWrapper
-  id={id}
-  isDark={isDark}
-  containerClass={`hero-intro flex min-h-[calc(100svh-4.5rem)] flex-col justify-center ${hasImage ? 'max-w-6xl' : 'max-w-5xl'} mx-auto pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-44 ${classes?.container ?? ''}`}
-  bg={bg}
->
-  <div class:list={['gap-10 lg:gap-16', hasImage ? 'md:grid md:grid-cols-12 md:items-center' : '']}>
-    <div class:list={[hasImage ? 'md:col-span-7' : '']}>
-      {
-        tagline && (
-          <p
-            class="hero-reveal mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary"
-            style="--reveal-delay: 0s"
-          >
-            {tagline}
-          </p>
-        )
-      }
-
-      {
-        name && (
-          <h1
-            class="hero-reveal mb-6 text-3xl font-extrabold leading-[1.05] tracking-tight text-heading break-words hyphens-auto sm:text-4xl sm:hyphens-none md:text-5xl lg:text-6xl"
-            style="--reveal-delay: 0.05s"
-            set:html={name}
-          />
-        )
-      }
-
-      {
-        intro && (
-          <div
-            class:list={[
-              'hero-reveal prose-hero text-base leading-relaxed text-muted md:text-lg md:leading-relaxed',
-              hasImage ? 'max-w-none' : 'max-w-3xl',
-            ]}
-            style="--reveal-delay: 0.2s"
-            set:html={intro}
-          />
-        )
-      }
-
-      {
-        resume && (
-          <a
-            class="hero-reveal group mt-10 inline-flex items-center gap-1.5 text-sm font-semibold text-heading underline decoration-from-font underline-offset-4 transition hover:text-primary md:text-base"
-            style="--reveal-delay: 0.34s"
-            href={resume.href}
-            target={resume.href?.startsWith('http') ? '_blank' : undefined}
-            rel={resume.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-          >
-            {resume.text ?? 'View Résumé'}
-            <Icon
-              name={resume.icon ?? 'tabler:arrow-up-right'}
-              class="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </a>
-        )
-      }
-
-      {
-        socials.length > 0 && (
-          <ul class="hero-socials mt-10 flex flex-wrap items-center gap-3 list-none">
-            {socials.map(({ label, href, icon }, i) => (
-              <li class="hero-reveal" style={`--reveal-delay: ${0.46 + i * 0.06}s`}>
-                <a
-                  class="flex h-11 w-11 items-center justify-center rounded-lg bg-heading text-[var(--aw-color-bg-page)] transition hover:bg-primary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  href={href}
-                  aria-label={label}
-                  target={href?.startsWith('http') ? '_blank' : undefined}
-                  rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                >
-                  <Icon name={icon} class="h-6 w-6" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        )
-      }
-    </div>
-
-    {
-      image && (
-        <figure class="hero-reveal mt-14 md:col-span-5 md:mt-0" style="--reveal-delay: 0.26s">
-          {image.caption && <figcaption class="mb-3 text-right text-sm text-muted">{image.caption}</figcaption>}
-          <div class="hero-portrait-shadow">
-            <div class="hero-portrait aspect-[4/3] w-full overflow-hidden rounded-2xl">
-              <Image
-                class="h-full w-full object-cover"
-                src={image.src}
-                alt={image.alt}
-                widths={[360, 560, 760]}
-                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 40vw, 420px"
-                width={560}
-                height={420}
-                layout="cover"
-                format="webp"
-                loading="eager"
-                fetchpriority="high"
+<section {...id ? { id } : {}} class:list={['hero relative not-prose scroll-mt-[4.5rem]', classes?.container]}>
+  <div class="mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-4 pt-28 pb-16 md:px-6 md:pt-32 md:pb-20">
+    <div
+      class="flex flex-col gap-10 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center md:gap-8 lg:gap-12 xl:gap-20"
+    >
+      <div>
+        <div class="max-w-full md:w-fit">
+          {
+            name && (
+              <h1
+                class="hero-fade-up font-serif text-[clamp(2.5rem,11.5vw,3.5rem)] md:text-[clamp(2.75rem,5.8vw,4.65rem)] leading-[1] font-normal tracking-tight whitespace-nowrap text-heading"
+                set:html={name}
               />
-            </div>
-          </div>
-        </figure>
-      )
-    }
+            )
+          }
+
+          {
+            intro && (
+              <div
+                class="hero-fade-up prose-hero mt-6 text-base md:w-0 md:min-w-full leading-relaxed text-pretty text-default md:text-lg md:leading-relaxed"
+                style="--fade-delay: 0.15s"
+                set:html={intro}
+              />
+            )
+          }
+
+          {
+            (resume || socials.length > 0) && (
+              <div
+                class="hero-fade-up mt-9 flex flex-wrap md:w-0 md:min-w-full items-center gap-x-6 gap-y-4"
+                style="--fade-delay: 0.3s"
+              >
+                {resume && (
+                  <a
+                    class="hero-glass group inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-sm font-medium text-heading transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    href={resume.href}
+                    target={resume.href?.startsWith('http') ? '_blank' : undefined}
+                    rel={resume.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    {resume.text ?? 'View Résumé'}
+                    <Icon
+                      name={resume.icon ?? 'tabler:arrow-up-right'}
+                      class="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    />
+                  </a>
+                )}
+
+                {socials.length > 0 && (
+                  <ul class="flex items-center gap-1 list-none">
+                    {socials.map(({ label, href, icon }) => (
+                      <li>
+                        <a
+                          class="flex h-11 w-11 items-center justify-center rounded-full text-heading transition hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                          href={href}
+                          aria-label={label}
+                          target={href?.startsWith('http') ? '_blank' : undefined}
+                          rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        >
+                          <Icon name={icon} class="h-6 w-6" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )
+          }
+        </div>
+      </div>
+
+      <div class="hero-divider hidden w-0.5 self-stretch md:block" aria-hidden="true"></div>
+
+      <div class="hero-portrait order-first md:order-none">
+        <HeroScene />
+      </div>
+    </div>
   </div>
-</WidgetWrapper>
+</section>
 
 <style>
+  /* Same glass as the floating nav pill in Header.astro. */
+  .hero {
+    --hero-glass: rgb(0 0 0 / 4%);
+    --hero-glass-hover: rgb(0 0 0 / 8%);
+    --hero-glass-border: rgb(0 0 0 / 10%);
+  }
+  :global(.dark) .hero {
+    --hero-glass: rgb(255 255 255 / 5%);
+    --hero-glass-hover: rgb(255 255 255 / 10%);
+    --hero-glass-border: rgb(255 255 255 / 10%);
+  }
+  .hero-glass {
+    background-color: var(--hero-glass);
+    border: 1px solid var(--hero-glass-border);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .hero-glass:hover {
+    background-color: var(--hero-glass-hover);
+  }
+
   /* Inline links inside the intro paragraph are the navigation device of this
      hero, so they need to read as links without the paragraph turning blue. */
   .prose-hero :global(a) {
@@ -165,32 +156,33 @@ const hasImage = Boolean(image);
     margin-top: 1.25rem;
   }
 
-  /* The portrait's lower edge dissolves into the page rather than ending on a
-     line. A mask is used instead of an overlaid gradient because the page
-     background differs between themes — masking to transparent lets whatever
-     is behind show through, so one rule covers light and dark.
-     The shadow lives on the parent as a drop-shadow (not a box-shadow) because
-     drop-shadow follows the alpha channel: it fades out with the image instead
-     of drawing a hard rectangle under the faded edge. */
-  .hero-portrait {
-    -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 32%, #000 100%);
-    mask-image: linear-gradient(to bottom, transparent 2%, #000 32%, #000 100%);
-  }
-  .hero-portrait-shadow {
-    filter: drop-shadow(0 18px 36px rgb(0 0 0 / 38%));
+  .hero-divider {
+    background: linear-gradient(to bottom, transparent, #bf5700 22%, #bf5700 78%, transparent);
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .hero-reveal {
-      animation: heroReveal 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) both;
-      animation-delay: var(--reveal-delay, 0s);
+    .hero-divider {
+      animation: heroDivider 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) 0.35s both;
+    }
+    @keyframes heroDivider {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
     }
 
-    @keyframes heroReveal {
+    .hero-fade-up {
+      animation: heroFadeUp 1s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+      animation-delay: var(--fade-delay, 0s);
+    }
+
+    @keyframes heroFadeUp {
       from {
         opacity: 0;
         filter: blur(12px);
-        transform: translate3d(-1.5rem, 0, 0);
+        transform: translate3d(0, 1.25rem, 0);
       }
       to {
         opacity: 1;

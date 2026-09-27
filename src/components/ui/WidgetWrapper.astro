@@ -27,10 +27,7 @@ const WrapperTag = as;
   </div>
   <div
     class:list={[
-      twMerge(
-        'relative mx-auto max-w-7xl px-4 md:px-6 py-8 md:py-10 lg:py-12 text-default intersect-once intersect-quarter intersect-no-queue motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade',
-        containerClass
-      ),
+      twMerge('relative mx-auto max-w-7xl px-4 md:px-6 py-8 md:py-10 lg:py-12 text-default', containerClass),
       { dark: isDark },
     ]}
   >
