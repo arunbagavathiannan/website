@@ -16,9 +16,8 @@
 // Hidden below the md breakpoint, where the two-column layouts stack.
 //
 // Hovering a bracketed element closes its bracket into a full rounded
-// rectangle: two caps grow up from the (faded) tops of the arms and meet
-// above the element's centre. Only once the bracket itself has been drawn,
-// and instantly under reduced motion.
+// rectangle, however far scrolling has drawn it, and leaving restores the
+// scroll-drawn state. Instant under reduced motion.
 
 export interface Link {
   from: string;
@@ -82,7 +81,7 @@ const { links } = Astro.props;
   type Point = [number, number];
   type Box = { x: number; y: number; w: number; h: number };
   type Stroke = { el: SVGPathElement; length: number; windows: [number, number, number][] };
-  const CLOSE_MS = 450; // how long a bracket takes to close on hover
+  const CLOSE_MS = 550; // how long a bracket takes to close on hover
 
   // Page position of an element, ignoring transforms.
   function measure(el: HTMLElement): Box {
@@ -251,8 +250,7 @@ const { links } = Astro.props;
           armTop,
           'in'
         );
-        const arms = this.strokes.slice(armStrokes);
-        this.addClose(fromEl, arms, from, armTop, bottom, jx);
+        this.addClose(fromEl, from, bottom, jx);
 
         if (link.closed) {
           // Already complete on landing, so it reveals with the hero instead of drawing.
@@ -326,21 +324,23 @@ const { links } = Astro.props;
       });
     }
 
-    // Caps that close a bracket into a rectangle while its element is hovered.
-    // Each starts where its arm's fade-in has become solid, runs up over the
-    // faded part to the top corner and across to the centre, so the finished
-    // frame is one unbroken line.
-    private addClose(el: HTMLElement, arms: Stroke[], box: Box, armTop: number, bottom: number, jx: number) {
+    // Closes a bracket into a full rounded rectangle while its element is
+    // hovered, however much of the bracket scrolling has drawn so far. Two
+    // halves leave the top centre and sweep down each side to meet at the
+    // bottom centre, tracing over whatever is already drawn (and over the arms'
+    // faded tops, which read solid while closed). Leaving undraws them back to
+    // the top, which uncovers the scroll-drawn state underneath.
+    private addClose(el: HTMLElement, box: Box, bottom: number, jx: number) {
       const top = box.y - GAP;
-      const solidFrom = Math.min(armTop + FADE, bottom - RADIUS);
-      const caps = [box.x - GAP, box.x + box.w + GAP].map((x) => {
+      const halves = [box.x - GAP, box.x + box.w + GAP].map((x) => {
         const path = document.createElementNS(SVG_NS, 'path');
         path.setAttribute(
           'd',
           toPath([
-            [x, solidFrom],
-            [x, top],
             [jx, top],
+            [x, top],
+            [x, bottom],
+            [jx, bottom],
           ])
         );
         path.setAttribute('fill', 'none');
@@ -357,14 +357,11 @@ const { links } = Astro.props;
         return { path, length };
       });
 
-      // Only close a bracket that has finished drawing, or the caps would hang
-      // in mid-air above a half-drawn line.
-      const armsDrawn = () => arms.every((a) => parseFloat(a.el.style.strokeDashoffset) < 1);
-      const set = (open: boolean) =>
-        caps.forEach(({ path, length }) => (path.style.strokeDashoffset = `${open ? 0 : length}`));
+      const set = (closed: boolean) =>
+        halves.forEach(({ path, length }) => (path.style.strokeDashoffset = `${closed ? 0 : length}`));
 
       const { signal } = this.hoverAbort!;
-      el.addEventListener('mouseenter', () => armsDrawn() && set(true), { signal });
+      el.addEventListener('mouseenter', () => set(true), { signal });
       el.addEventListener('mouseleave', () => set(false), { signal });
     }
 
