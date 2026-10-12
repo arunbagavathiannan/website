@@ -527,8 +527,8 @@ export interface HeroIntro extends Widget {
 export interface ExperienceRole {
   title?: string;
   dates?: string;
-  /** Accepts inline HTML. */
-  description?: string;
+  /** Accepts inline HTML. An array renders as bullet points. */
+  description?: string | Array<string>;
 }
 
 export interface ExperienceItem {
@@ -538,8 +538,8 @@ export interface ExperienceItem {
   role?: string;
   location?: string;
   dates?: string;
-  /** Accepts inline HTML. */
-  description?: string;
+  /** Accepts inline HTML. An array renders as bullet points. */
+  description?: string | Array<string>;
   /** Several roles at the same organisation, newest first, stacked under one
    *  heading in place of `role` / `dates` / `description`. */
   roles?: Array<ExperienceRole>;

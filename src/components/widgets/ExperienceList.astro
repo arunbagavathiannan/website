@@ -88,8 +88,16 @@ const {
                   {entry.dates && (
                     <p class="mt-2 text-[0.8rem] leading-tight font-semibold text-primary">{entry.dates}</p>
                   )}
-                  {entry.description && (
-                    <p class="mt-2 text-[0.95rem] leading-relaxed text-default" set:html={entry.description} />
+                  {Array.isArray(entry.description) ? (
+                    <ul class="mt-2 list-disc space-y-1 pl-5 text-[0.95rem] leading-relaxed text-default marker:text-muted">
+                      {entry.description.map((point) => (
+                        <li set:html={point} />
+                      ))}
+                    </ul>
+                  ) : (
+                    entry.description && (
+                      <p class="mt-2 text-[0.95rem] leading-relaxed text-default" set:html={entry.description} />
+                    )
                   )}
                 </div>
               ))}
