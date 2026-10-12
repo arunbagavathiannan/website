@@ -155,8 +155,10 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
       inset 0 1px 0 rgb(255 255 255 / 25%),
       0 8px 18px -8px var(--brand);
   }
+  /* A dark logo has no gradient to carry the dropped shadow, so its glow sits
+     evenly around the tile instead of pooling below it. */
   .project-logo-image {
-    box-shadow: 0 8px 18px -8px var(--brand);
+    box-shadow: 0 0 16px -4px var(--brand);
   }
   /* The glow is a radial gradient over the whole card, anchored in the top-right
      corner. At rest it is a faint tint tucked into that corner; on hover it
