@@ -45,10 +45,18 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
 
   <ul class:list={['grid gap-6 md:gap-8 list-none', columnsClass]}>
     {
-      items.map(({ title: itemTitle, description, image, tags, href, result, linkText, brand }) => {
+      items.map(({ title: itemTitle, description, image, tags, href, result, linkText, brand }, index) => {
         const Card = href ? 'a' : 'div';
+        // In a two-column grid, an odd last card sits centred on its own row
+        // instead of hugging the left edge.
+        const centerLast = columns === 2 && items.length % 2 === 1 && index === items.length - 1;
         return (
-          <li>
+          <li
+            class:list={[
+              centerLast &&
+                'sm:col-span-2 sm:w-[calc((100%-1.5rem)/2)] sm:justify-self-center md:w-[calc((100%-2rem)/2)]',
+            ]}
+          >
             <Card
               href={href}
               class:list={[
@@ -80,10 +88,16 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
               <div class="relative flex flex-1 flex-col p-6">
                 {(brand || (tags && tags.length > 0)) && (
                   <div class="mb-4 flex items-center gap-3">
-                    {brand && (
-                      <span class="project-logo flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white">
-                        <Icon name={brand.icon} class="h-6 w-6" />
+                    {brand?.logo ? (
+                      <span class="project-logo-image h-11 w-11 shrink-0 overflow-hidden rounded-xl dark:ring-1 dark:ring-white/15">
+                        <Image src={brand.logo} alt="" class="h-full w-full" width={88} height={88} loading="lazy" />
                       </span>
+                    ) : (
+                      brand?.icon && (
+                        <span class="project-logo flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white">
+                          <Icon name={brand.icon} class="h-6 w-6" />
+                        </span>
+                      )
                     )}
                     {tags && tags.length > 0 && (
                       <ul class="flex flex-wrap gap-1.5 list-none">
@@ -140,6 +154,9 @@ const tagClass = (tag: string) => TAG_COLORS[tag.toLowerCase()] ?? 'bg-black/5 t
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 25%),
       0 8px 18px -8px var(--brand);
+  }
+  .project-logo-image {
+    box-shadow: 0 8px 18px -8px var(--brand);
   }
   /* The glow is a radial gradient over the whole card, anchored in the top-right
      corner. At rest it is a faint tint tucked into that corner; on hover it

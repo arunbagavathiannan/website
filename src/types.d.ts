@@ -407,7 +407,9 @@ export interface Project {
   /** The project's own identity: a logo tile and a soft glow in its colours. */
   brand?: {
     /** Icon name for the logo tile, e.g. `tabler:trending-up`. */
-    icon: string;
+    icon?: string;
+    /** The project's own logo, shown in place of the gradient icon tile. */
+    logo?: ImageMetadata;
     color: string;
     /** Second colour for the tile's gradient. Defaults to `color`. */
     colorTo?: string;

@@ -6,6 +6,7 @@ import logoYouTube from '~/assets/images/logos/youtube.png';
 import logoTexasAM from '~/assets/images/logos/texas-am.png';
 import logoUtCs from '~/assets/images/logos/ut-cs.png';
 import logoUtIee from '~/assets/images/logos/ut-iee.png';
+import logoPerchside from '~/assets/images/logos/perchside.png';
 
 import Header from '~/components/widgets/Header.astro';
 import HeroIntro from '~/components/widgets/HeroIntro.astro';
@@ -60,7 +61,7 @@ const metadata = {
         <a href="https://github.com/Longhorn-Developers/UT-Registration-Plus" target="_blank" rel="noopener noreferrer"
           >UT Registration Plus</a
         >, the Chrome extension 60,000+ students use to build their schedules. I have presented machine learning
-        research conducted at Texas A&amp;M in Vancouver and Spain, and I've spent five years growing a{' '}
+        research conducted at Texas A&amp;M in Vancouver and Spain, and I spent four years growing a{' '}
         <a href="https://www.youtube.com/@orphicakm" target="_blank" rel="noopener noreferrer">YouTube channel</a>{
           ' '
         }past 20,000 subscribers.
@@ -90,7 +91,7 @@ const metadata = {
             title: 'Technical Lead, UT Registration Plus',
             dates: 'Aug 2026 – Present',
             description:
-              'Promoted from Software Engineer to lead a team of 5 developers. Ran end-to-end hiring for the developer fellowship: screened 80+ applications, interviewed finalists, selected 4 engineers at roughly a 5% acceptance rate.',
+              'Promoted from Software Engineer to lead a team of 5 developers. Introduced an agile workflow (weekly standups, Linear milestones) and enforced CI gates on every PR (Biome, Storybook, Chromatic, CodeQL), cutting median PR open-to-merge time by 63%. Ran end-to-end hiring for the developer fellowship: screened 80+ applicants, interviewed finalists, selected 4 engineers at roughly a 5% acceptance rate. Authored Longhorn Developers’ engineering standards guide, adopted by 54 developers across 11 project teams.',
           },
           {
             title: 'Software Engineer, UT Registration Plus',
@@ -104,18 +105,18 @@ const metadata = {
         organization: 'YouTube',
         href: 'https://www.youtube.com/@orphicakm',
         role: 'Content Creator',
-        dates: 'Jul 2021 – Present',
+        dates: 'Jul 2021 – Jul 2025',
         logo: logoYouTube,
         logoScale: 1.3,
         description:
-          'Grew a video-editing channel past 20,000 subscribers, 32M+ impressions and 7M+ views. Launched and ran <a href="https://www.buyorphic.com/" target="_blank" rel="noopener noreferrer">buyorphic.com</a>, selling editing presets for $500+ in its first year.',
+          'Grew a video-editing channel past 20,000 subscribers, 32M+ impressions and 7M+ views. Launched and ran <a href="https://www.buyorphic.com/" target="_blank" rel="noopener noreferrer">buyorphic.com</a>, selling editing presets for $500+ in its first year. Built a 26,000-member Discord community with moderation practices and video editing contests.',
       },
       {
         organization: 'Texas A&M University',
         href: 'https://www.tamu.edu/index.html',
         role: 'ML Research Intern',
         location: 'College Station, TX',
-        dates: 'Jan 2025 – Mar 2025',
+        dates: 'Dec 2024 – Mar 2025',
         logo: logoTexasAM,
         description:
           'Took a raw 100-image dataset to a production YOLOv8 detection model at 80%+ precision and recall. Automated augmentation workflows in Python and OpenCV scaled training data 6×. Presented results at 3 conferences, including the Weed Science Society of America in Vancouver and the European Weed Research Society in Spain.',
@@ -188,6 +189,15 @@ const metadata = {
         tags: ['JavaScript', 'React', 'Claude API', 'RAG'],
         href: 'https://immigration-roadmap.com/',
         linkText: 'View Website',
+      },
+      {
+        title: 'Perchside',
+        brand: { logo: logoPerchside, color: '#b85c42' },
+        description:
+          'A Chrome extension adding a floating productivity panel to claude.ai: themes, saved prompts, reminders and a usage-limit timer. Launched publicly on the Chrome Web Store with a freemium model.',
+        tags: ['TypeScript', 'React', 'Chrome MV3'],
+        href: 'https://chromewebstore.google.com/detail/perchside/cdogjbnadloigpfdlgajhaipdicdomli',
+        linkText: 'View Chrome Extension',
       },
     ]}
   />
