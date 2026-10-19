@@ -293,7 +293,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 **Role:** One clear next action.
 
 - Title: `Let's build something`
-- Subtitle: `Open to SWE internships for Summer 2027.`
+- Subtitle: `Open to product and growth engineering and management opportunities.`
 - Actions: `[primary: "Email me" → mailto:arun.bagavathiannan@gmail.com]`, `[secondary: "LinkedIn"]`, `[secondary: "GitHub"]`
 
 **Edge cases:**
