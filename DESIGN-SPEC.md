@@ -134,7 +134,7 @@ The reference site is minimal-editorial; AstroWind is a widget kit. Fusing them 
 | Near-black ground, near-monochrome palette | `Headline`, `Button`, `Footer` primitives |
 | Left-aligned section headings | Astro static build, image pipeline |
 
-**The load-bearing idea:** claims stay in sentences. A conventional portfolio hero breaks "60,000+ students" into a stat tile; here it stays inside the paragraph as a link. That is what makes the page read as written rather than assembled — and it's why the hero has no image and no button row.
+**The load-bearing idea:** claims stay in sentences. A conventional portfolio hero breaks "70,000+ students" into a stat tile; here it stays inside the paragraph as a link. That is what makes the page read as written rather than assembled — and it's why the hero has no image and no button row.
 
 **Accent discipline.** Burnt orange appears only on links, hover states, the `result` line and section icons. Everything else is black, white or grey. A scarce accent is what makes it read as emphasis; spending it on headings would flatten the whole page.
 
@@ -155,7 +155,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 **Content:**
 - Title: `Arun Bagavathiannan`
 - Tagline: `CS @ UT Austin · Class of 2028`
-- Subtitle: *I lead a team of 5 building a Chrome extension that 60,000+ UT students use to register for classes. Before that I trained computer-vision models for agricultural research and grew a YouTube channel to 20,000 subscribers.*
+- Subtitle: *I lead a team of 5 building a Chrome extension that 70,000+ UT students use to register for classes. Before that I trained computer-vision models for agricultural research and grew a YouTube channel to 20,000 subscribers.*
 - Actions: `[primary: "View my work" → #projects]`, `[secondary: "Résumé (PDF)" → /resume.pdf]`
 - Image: headshot, or a screenshot of UTRP in use
 
@@ -171,7 +171,7 @@ Each block names the existing AstroWind widget to use, the exact content from yo
 
 | Amount | Label | Traces to |
 |---|---|---|
-| `60,000+` | Students served by UTRP | Resume, UTRP bullet 1 |
+| `70,000+` | Students served by UTRP | Resume, UTRP bullet 1 |
 | `20,000+` | YouTube subscribers | Resume, Content Creator bullet 1 |
 | `7M+` | Video views | Resume, Content Creator bullet 1 |
 | `80%+` | ML model precision & recall | Resume, ML Research bullet 2 |

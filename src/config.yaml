@@ -11,7 +11,7 @@ metadata:
   title:
     default: Arun Bagavathiannan
     template: '%s — Arun Bagavathiannan'
-  description: "Computer Science student at UT Austin. Technical Lead on UT Registration Plus, a Chrome extension used by 60,000+ students."
+  description: "Computer Science student at UT Austin. Technical Lead on UT Registration Plus, a Chrome extension used by 70,000+ students."
   robots:
     index: true
     follow: true
